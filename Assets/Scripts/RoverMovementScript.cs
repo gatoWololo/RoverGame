@@ -13,7 +13,7 @@ public class RoverMovementScript : MonoBehaviour {
 	void Start () {
 
 	}
-
+	
 	//Given the new direction to move, rover will move that way and rotate itself.
 	public void updateMovement(Direction direction){
 		int x = 0, y = 0;
@@ -65,6 +65,7 @@ public class RoverMovementScript : MonoBehaviour {
 		updateMovement (Direction.Right);
 	if (Input.GetKey (KeyCode.LeftArrow))
 		updateMovement (Direction.Left);
+
 	return;
 	}
 
