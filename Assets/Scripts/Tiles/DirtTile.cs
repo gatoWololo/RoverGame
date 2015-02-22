@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-// Enum for the sake of proof of concept.
+// Enum for random tile pick.
 public enum DirtColor {darker, lighter };
 /*
  * Generic dirt tile that will cover some of the land.
@@ -9,44 +10,40 @@ public enum DirtColor {darker, lighter };
 public class DirtTile : Tile {
 	private string dirtLocation1 = "Textures/dirtTile1";
 	private string dirtLocation2 = "Textures/dirtTile2";
-	private string myTexture;
-
 	/// <summary>
+	/// The number of textures avaliable for tiles of this type. Used to return a random
+	/// number corresponding to one of the textures.
+	/// </summary>
+	private int numberOfTextures = 2;
+	private string myTexture;
+	//Used for random.
+	static private Array values;
+	static System.Random random;
+	//================================================================================
+		/// <summary>
 	/// Creates new DirtTile object. Takes position for location of dirt tile.
 	/// </summary>
 	/// <param name="position">Position.</param>
-	public DirtTile(Vector2 position, DirtColor color){
-		//Create new empty gameobject and attach 
-		gameObject = new GameObject ();
-		renderer = gameObject.AddComponent<SpriteRenderer>();
-		collider = gameObject.AddComponent<BoxCollider2D>();
-		gameObject.AddComponent<TileExploration>();
+	public DirtTile(Vector2 position) : base(position){
+		random = new System.Random ();
 
-		Vector3 finalPos = new Vector3 (position.x, position.y, 0);
-
-		if (color == DirtColor.darker)
-			myTexture = dirtLocation1;
-		else
-			myTexture = dirtLocation2;
-
+		myTexture = getRandTexture ();
 		renderer.sprite = Resources.Load (myTexture, typeof(Sprite)) as Sprite;
-		gameObject.transform.position = finalPos;
-		collider.size = new Vector3 (0.1f, 0.1f);
 
 		return;
 
 	}
-	// Use this for initialization
-	void Start () {
-		//canPassThroughIt = true;
-		//myRenderer = new SpriteRenderer ();
-		//myRenderer.sprite = Resources.Load (dirtLocation1, typeof(Sprite)) as Sprite;
+	//================================================================================
+	private string getRandTexture(){
+		int color = random.Next (1, numberOfTextures + 1);
+		string myTexture;
+
+		if (color == 1)
+			myTexture = dirtLocation1;
+		else
+			myTexture = dirtLocation2;
+
+		return myTexture;
 	}
-
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-
+	//================================================================================
 }
