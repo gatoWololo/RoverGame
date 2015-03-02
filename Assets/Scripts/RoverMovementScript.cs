@@ -17,13 +17,11 @@ public class RoverMovementScript : MonoBehaviour {
 	//Given the new direction to move, rover will move that way and rotate itself.
 	public void updateMovement(Direction direction){
 		int x = 0, y = 0;
-		Quaternion rotate = this.transform.rotation;
 		float newRotate = 0;
 
 		newRotate = getAngle (direction, this.previousDir);
 		//Update our direction.
 		this.previousDir = direction;
-		Debug.Log (newRotate);
 
 		//Figure out new velocity for rover.
 		switch (direction) {

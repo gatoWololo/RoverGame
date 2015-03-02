@@ -9,6 +9,7 @@ public class WaterTile : Tile {
 
 	public WaterTile(Vector2 position): base(position){
 		renderer.sprite = Resources.Load (texture1, typeof(Sprite)) as Sprite;
+		gameObject.name = "waterTile";
 		canPassThroughIt = false;
 		
 		return;

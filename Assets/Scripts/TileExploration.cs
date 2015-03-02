@@ -4,9 +4,7 @@ using System.Collections;
 public class TileExploration : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
-	
-	}
+	void Start () {	}
 
 	//If object is seen by the rover it should be set to viewable.
 	void OnTriggerEnter2D(Collider2D collider){
@@ -16,7 +14,5 @@ public class TileExploration : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
-	}
+	void Update () {	}
 }

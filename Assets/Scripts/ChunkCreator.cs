@@ -4,7 +4,7 @@ using System;
 
 public class ChunkCreator {
 	//Dimensions of array
-	private const int chunkSize = 100;
+	public const int chunkSize = 50;
 	private readonly Type[] tileTypes = {typeof(DirtTile), typeof(WaterTile) };
 	private System.Random randomPicker;
 	//================================================================================
@@ -25,6 +25,7 @@ public class ChunkCreator {
 		int size = ChunkCreator.chunkSize;
 		Chunk chunk = new Chunk (xCoord, yCoord);
 		Tile[,] tileArray = new Tile[size, size];
+		GameObject chunkObject = chunk.getGameObject();
 
 		/*Initialize all tiles.*/
 		for (int i = 0; i < size; i++){
@@ -34,6 +35,8 @@ public class ChunkCreator {
 				//Set info for new object.
 				tileArray[i,j].setTileIndex(i,j);
 				tileArray[i,j].setVisible(false);
+				//Set tile as child of Chunk.
+				tileArray[i,j].getGameObject().transform.parent = chunkObject.transform;
 			}
 		}
 		

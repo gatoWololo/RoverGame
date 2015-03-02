@@ -19,6 +19,7 @@ public abstract class Tile {
 	protected GameObject gameObject;
 	protected SpriteRenderer renderer;
 	protected BoxCollider2D collider;
+
 	//================================================================================
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Tile"/> class.
@@ -77,5 +78,9 @@ public abstract class Tile {
 	
 	}
 	//================================================================================
-
+	public GameObject getGameObject(){
+		return this.gameObject;	
+		
+	}	
+	//================================================================================
 }
