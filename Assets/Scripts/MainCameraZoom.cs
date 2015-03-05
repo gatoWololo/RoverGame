@@ -6,8 +6,6 @@ public class MainCameraZoom : MonoBehaviour {
 	public float maxZoomOut;
 	public float maxZoomIn;
 
-	public float verticalZoomScrollIncrement;
-	public float horizontalZoomScrollIncrement;
 
 	// Use this for initialization
 	void Start () {	}
@@ -21,52 +19,38 @@ public class MainCameraZoom : MonoBehaviour {
 
 		Transform mainCamTransform = Camera.main.transform;
 
+		// get mouse pointers current position
 		float mPosX = Input.mousePosition.x;
 		float mPosY = Input.mousePosition.y;
 
-		verticalZoomScrollIncrement = getVerticalZoomScrollincrement (mPosY, currentSize);
-		horizontalZoomScrollIncrement = getHorizontalZoomScrollincrement (mPosX, currentSize);
-				
-		if (Input.GetAxis ("Mouse ScrollWheel") < 0 && currentSize < maxZoomOut) // back 
-			Camera.main.orthographicSize++;
+		// calculate the vector from the center of screen to mouse pointers current position
+		Vector3 scrollDirection = getVectorforZoomDirection (mPosX, mPosY);
 
-		if (Input.GetAxis ("Mouse ScrollWheel") > 0 && currentSize > maxZoomIn) { // forward
+		// zoom out
+		if (Input.GetAxis ("Mouse ScrollWheel") < 0 && currentSize < maxZoomOut) { 
+			Camera.main.orthographicSize++;
+		}
+
+		// zoom in
+		if (Input.GetAxis ("Mouse ScrollWheel") > 0 && currentSize > maxZoomIn) {
 			Camera.main.orthographicSize--;
-				mainCamTransform.Translate(Vector3.up * verticalZoomScrollIncrement);
-				mainCamTransform.Translate(Vector3.right * horizontalZoomScrollIncrement);
+			mainCamTransform.Translate(scrollDirection); // zoom in towards mouse pointer
+
 		}
 
 		return;
 	}
 
-	float getHorizontalZoomScrollincrement(float mPosX, float currentSize){
-			float centerScreenWidth = Screen.width/2;
-			float widthDiffMPosCenter = mPosX - centerScreenWidth;
-			float horizontalZoomScrollIncrement = widthDiffMPosCenter / (currentSize*currentSize);
 
-			if (horizontalZoomScrollIncrement < -0.25f) {
-				horizontalZoomScrollIncrement = -0.25f;
-			}
-			if (horizontalZoomScrollIncrement > 0.25f) {
-				horizontalZoomScrollIncrement = 0.25f;
-			}
-
-			return horizontalZoomScrollIncrement;
-	}
-
-	float getVerticalZoomScrollincrement(float mPosY, float currentSize){
-			float centerScreenHeight = Screen.height/2;
-			float heightDiffMPosCenter = mPosY - centerScreenHeight;
-			float verticalZoomScrollIncrement = heightDiffMPosCenter/ (currentSize*currentSize) ;
-
-			if (verticalZoomScrollIncrement < -0.25f) {
-				verticalZoomScrollIncrement = -0.25f;
-			}
-			if (verticalZoomScrollIncrement > 0.25f) {
-				verticalZoomScrollIncrement = 0.25f;
-			}
-
-			return verticalZoomScrollIncrement;
+	Vector3 getVectorforZoomDirection(float mPosX, float mPosY){
+		// This method generates a vector that represents the direction the camera should take
+		// to arrive at the mouse pointers current position from the current center of the screen.
+		float centerScreenWidth = Screen.width/2;
+		float centerScreenHeight = Screen.height/2;
+		float widthDiffMPosCenter = (mPosX - centerScreenWidth)/Screen.width;
+		float heightDiffMPosCenter = (mPosY - centerScreenHeight)/Screen.height;
+		Vector3 scrollDirection = new Vector3 (widthDiffMPosCenter, heightDiffMPosCenter, 0.0f);
+		return scrollDirection;
 	}
 
 }
