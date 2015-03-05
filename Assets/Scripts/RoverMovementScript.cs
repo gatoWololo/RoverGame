@@ -1,17 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
 //Probably should be updated so if a collision is caused then we stop automatically
 //instead of using friction to slow down...
 public class RoverMovementScript : MonoBehaviour {
+	//Chunk rover is in.
+	int ChunkNumber;
+	//Tile the rover is in.
+	public static int xTile;
+	public static int yTile;
 	public float speed = 1.0f;
 	//We need to keep track of the current direction of rover to know how
 	//much to rotate rover by.
-	private Direction previousDir = Direction.Up;
+	public static Direction previousDir = Direction.Up;
+	//Rover has reference to current chunk.
+	private Chunk chunk;
 	// Use this for initialization
 	void Start () {
-
+		xTile = 10;
+		yTile = 10;
 	}
 	
 	//Given the new direction to move, rover will move that way and rotate itself.
@@ -19,9 +26,9 @@ public class RoverMovementScript : MonoBehaviour {
 		int x = 0, y = 0;
 		float newRotate = 0;
 
-		newRotate = getAngle (direction, this.previousDir);
+		newRotate = getAngle (direction, RoverMovementScript.previousDir);
 		//Update our direction.
-		this.previousDir = direction;
+		RoverMovementScript.previousDir = direction;
 
 		//Figure out new velocity for rover.
 		switch (direction) {
@@ -55,14 +62,26 @@ public class RoverMovementScript : MonoBehaviour {
 	if (this.rigidbody2D.velocity.magnitude > 0.05)
 		return;
 
-	if (Input.GetKey (KeyCode.UpArrow)) 
+	if (Input.GetKey (KeyCode.UpArrow)) { 
 		updateMovement (Direction.Up);
-	if ( Input.GetKey(KeyCode.DownArrow))
+		yTile++;
+	}
+	if ( Input.GetKey(KeyCode.DownArrow)){
 		updateMovement (Direction.Down);
-	if ( Input.GetKey(KeyCode.RightArrow))
+		yTile--;
+	}
+	if (Input.GetKey (KeyCode.RightArrow)){
 		updateMovement (Direction.Right);
-	if (Input.GetKey (KeyCode.LeftArrow))
+		xTile++;
+	}
+	if (Input.GetKey (KeyCode.LeftArrow)) {
 		updateMovement (Direction.Left);
+		xTile--;
+	}
+	//If Tile is now out of array bound of this chunk we must move to
+	//the new chunk!
+	//TODO
+
 
 	return;
 	}
@@ -85,7 +104,7 @@ public class RoverMovementScript : MonoBehaviour {
 	//Given two direction will return the proper angle to rotate byl
 	public float getAngle(Direction d1, Direction d2){
 
-		if (isOpposite (d1, this.previousDir))
+		if (isOpposite (d1, RoverMovementScript.previousDir))
 			return 180.0f;
 	
 		switch (d2) {
@@ -117,5 +136,15 @@ public class RoverMovementScript : MonoBehaviour {
 
 		//Should never get here...
 		return 0;
+	}
+
+	//Get X Coordinate.
+	public int getXTile(){
+		return xTile;
+	}
+
+	//Get X Coordinate.
+	public int getYTile(){
+		return yTile;
 	}
 }
