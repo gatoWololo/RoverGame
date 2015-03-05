@@ -23,8 +23,9 @@ public class ChunkCreator {
 	/// <param name="yCoord">Y coordinate.</param>
 	public Chunk createNewChunk(float xCoord, float yCoord){
 		int size = ChunkCreator.chunkSize;
-		Chunk chunk = new Chunk (xCoord, yCoord);
-		Tile[,] tileArray = new Tile[size, size];
+		Chunk chunk = new Chunk (xCoord, yCoord);;
+
+		Tile[,] tileArray = chunk.getTileArray();
 		GameObject chunkObject = chunk.getGameObject();
 
 		/*Initialize all tiles.*/
@@ -39,7 +40,7 @@ public class ChunkCreator {
 				tileArray[i,j].getGameObject().transform.parent = chunkObject.transform;
 			}
 		}
-		
+
 		return chunk;
 	}
 	//================================================================================

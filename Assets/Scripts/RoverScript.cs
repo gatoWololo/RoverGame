@@ -8,6 +8,7 @@ public class RoverScript : MonoBehaviour {
 	private int currentGrid;
 	//The line of sight for the rover to explore squares around him.
 	private int lineOfSight;
+
 	// Use this for initialization
 	void Start () {
 

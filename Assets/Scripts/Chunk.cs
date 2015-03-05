@@ -7,6 +7,7 @@ using System.Collections;
 /// to a chunk on Minecraft.
 /// </summary>
 public class Chunk : Component{
+	public string str = "Hello World!";
 	//Two dimensional array of tiles.
 	private Tile[,] tileArray;
 	// Coordinate of bottom left corner of chunk.
@@ -22,9 +23,9 @@ public class Chunk : Component{
 	private EdgeCollider2D bottom;
 	private EdgeCollider2D top;
 	private EdgeCollider2D left;
-	//private EdgeCollider2D right;
+	private EdgeCollider2D right;
 
-	private const float colliderSize = 6;
+	private const float colliderSize = 0.0f;
 	//================================================================================
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Chunk"/> class.
@@ -37,11 +38,11 @@ public class Chunk : Component{
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 		this.gameObject = new GameObject();
-
+		this.tileArray = new Tile[(int)size, (int)size];
 		bottom = gameObject.AddComponent<EdgeCollider2D> ();
 		top = gameObject.AddComponent<EdgeCollider2D> ();
 		left = gameObject.AddComponent<EdgeCollider2D> ();
-		//right = gameObject.AddComponent<EdgeCollider2D> ();
+		right = gameObject.AddComponent<EdgeCollider2D> ();
 
 		//Make the points for our hitboxes in our chunk.
 		Vector2 topLeft = new Vector2 (xCoord + colliderSize, yCoord + size - colliderSize);
@@ -52,26 +53,20 @@ public class Chunk : Component{
 		//Set the new edgeColliders to their appropriate points, counter clockwise order.
 		left.points = getEdgePoints (bottomLeft, topLeft);
 		left.isTrigger = true;
-		left.tag = "left";
 
 		bottom.points = getEdgePoints (bottomRight, bottomLeft);
 		bottom.isTrigger = true;
-		bottom.tag = "bottom";
 
 		top.points = getEdgePoints (topLeft, topRight);
 		top.isTrigger = true;
-		top.tag = "top";
 
-
-
-		//right.points = getEdgePoints (topRight, bottomRight);
-		//right.isTrigger = true;
-		//right.tag = "right";
+		right.points = getEdgePoints (topRight, bottomRight);
+		right.isTrigger = true;
 
 		//Add script to handle Hitbox of rover againts edges.
 		//gameObject.AddComponent<ChunkExploration>();
 		gameObject.name = "chunk";
-		return;
+
 	}
 	//================================================================================
 	/// <summary>
@@ -101,6 +96,9 @@ public class Chunk : Component{
 	// Update is called once per frame
 	void Update () {
 	
+	}
+	public Tile[,] getTileArray(){
+		return tileArray;
 	}
 	//================================================================================
 }
