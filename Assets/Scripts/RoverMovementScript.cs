@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 //Probably should be updated so if a collision is caused then we stop automatically
@@ -15,6 +16,8 @@ public class RoverMovementScript : MonoBehaviour {
 	public static Direction previousDir = Direction.Up;
 	//Rover has reference to current chunk.
 	private Chunk chunk;
+
+
 	// Use this for initialization
 	void Start () {
 		xTile = 10;
@@ -64,7 +67,7 @@ public class RoverMovementScript : MonoBehaviour {
 
 	if (Input.GetKey (KeyCode.UpArrow)) { 
 		updateMovement (Direction.Up);
-		yTile++;
+		yTile++;	    
 	}
 	if ( Input.GetKey(KeyCode.DownArrow)){
 		updateMovement (Direction.Down);
