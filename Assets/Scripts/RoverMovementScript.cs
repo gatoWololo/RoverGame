@@ -65,19 +65,19 @@ public class RoverMovementScript : MonoBehaviour {
 	if (this.rigidbody2D.velocity.magnitude > 0.05)
 		return;
 
-	if (Input.GetKey (KeyCode.UpArrow)) { 
+	if (Input.GetKeyDown(KeyCode.UpArrow)) { 
 		updateMovement (Direction.Up);
 		yTile++;	    
 	}
-	if ( Input.GetKey(KeyCode.DownArrow)){
+	if ( Input.GetKeyDown(KeyCode.DownArrow)){
 		updateMovement (Direction.Down);
 		yTile--;
 	}
-	if (Input.GetKey (KeyCode.RightArrow)){
+	if (Input.GetKeyDown(KeyCode.RightArrow)){
 		updateMovement (Direction.Right);
 		xTile++;
 	}
-	if (Input.GetKey (KeyCode.LeftArrow)) {
+	if (Input.GetKeyDown(KeyCode.LeftArrow)) {
 		updateMovement (Direction.Left);
 		xTile--;
 	}
