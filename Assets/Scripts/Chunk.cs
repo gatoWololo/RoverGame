@@ -16,16 +16,9 @@ public class Chunk : Component{
 	//Index of Chunk in the array holding all chunks.
 	private int xChunk;
 	private int yChunk;
-	//GameObject containing hitbox and child Tiles.
+	//GameObject containing child Tiles.
 	private GameObject gameObject;
-	//Box collider for chunks. When rover hits a chunk collider it will
-	//Signal the next chunk in the world to be generated.
-	private EdgeCollider2D bottom;
-	private EdgeCollider2D top;
-	private EdgeCollider2D left;
-	private EdgeCollider2D right;
 
-	private const float colliderSize = 0.0f;
 	//================================================================================
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Chunk"/> class.
@@ -37,68 +30,20 @@ public class Chunk : Component{
 		float size = ChunkCreator.chunkSize;
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
-		this.gameObject = new GameObject();
 		this.tileArray = new Tile[(int)size, (int)size];
-		bottom = gameObject.AddComponent<EdgeCollider2D> ();
-		top = gameObject.AddComponent<EdgeCollider2D> ();
-		left = gameObject.AddComponent<EdgeCollider2D> ();
-		right = gameObject.AddComponent<EdgeCollider2D> ();
-
-		//Make the points for our hitboxes in our chunk.
-		Vector2 topLeft = new Vector2 (xCoord + colliderSize, yCoord + size - colliderSize);
-		Vector2 topRight = new Vector2 (xCoord + size - colliderSize, yCoord + size - colliderSize);
-		Vector2 bottomLeft = new Vector2 (xCoord + colliderSize, yCoord + colliderSize);
-		Vector2 bottomRight = new Vector2 (xCoord + size - colliderSize, yCoord + colliderSize);
-
-		//Set the new edgeColliders to their appropriate points, counter clockwise order.
-		left.points = getEdgePoints (bottomLeft, topLeft);
-		left.isTrigger = true;
-
-		bottom.points = getEdgePoints (bottomRight, bottomLeft);
-		bottom.isTrigger = true;
-
-		top.points = getEdgePoints (topLeft, topRight);
-		top.isTrigger = true;
-
-		right.points = getEdgePoints (topRight, bottomRight);
-		right.isTrigger = true;
+		this.gameObject = new GameObject();
 
 		//Add script to handle Hitbox of rover againts edges.
 		//gameObject.AddComponent<ChunkExploration>();
 		gameObject.name = "chunk";
 
 	}
-	//================================================================================
-	/// <summary>
-	/// Creates a Vector2 array to create the edgeColliders needed for all four sides.
-	/// chunk.
-	/// </summary>
-	/// <returns>The edge.</returns>
-	/// <param name="start">The start coordinate.</param>
-	/// <param name="end">The end coordinate.</param>
-	private Vector2[] getEdgePoints(Vector2 start, Vector2 end){
-		return new Vector2[] {start, end};
-	}
-	//================================================================================
-	public GameObject getGameObject(){
-		return this.gameObject;	
-	
-	}	
-	//================================================================================
-	//================================================================================
-	//Given a direction returns the index of the tiles adjacent to this one in that
-	//direction.
-	public int getAdjacentTiles(Direction direction,Tile currentTile){
-		
-		return -1;
-		
-	}
-	// Update is called once per frame
-	void Update () {
-	
-	}
 	public Tile[,] getTileArray(){
 		return tileArray;
+
 	}
+	public GameObject getGameObject(){
+		return gameObject;
+		}
 	//================================================================================
 }

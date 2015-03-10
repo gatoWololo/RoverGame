@@ -16,14 +16,17 @@ public class RoverMovementScript : MonoBehaviour {
 	public static Direction previousDir = Direction.Up;
 	//Rover has reference to current chunk.
 	private Chunk chunk;
-
-
+	private float delay = 1.7f;
+	private float nextMove = 0.0f;
+	private int chunkSize;
+//===================================================================================
 	// Use this for initialization
 	void Start () {
 		xTile = 10;
 		yTile = 10;
+		chunkSize = (int)World.chunkSize;
 	}
-	
+	//===================================================================================
 	//Given the new direction to move, rover will move that way and rotate itself.
 	public void updateMovement(Direction direction){
 		int x = 0, y = 0;
@@ -56,18 +59,26 @@ public class RoverMovementScript : MonoBehaviour {
 		this.transform.Rotate (0, 0, newRotate);
 		this.rigidbody2D.velocity = new Vector2 (x * speed, y * speed);
 		
+		//Restart  time!
+		nextMove = Time.time + delay;
+		
 		return;
 	}
-
+//===================================================================================
 	// Update is called once per frame
 	void Update () {
-	//If object is moving don't allow any further movement.
-	if (this.rigidbody2D.velocity.magnitude > 0.05)
+	//If cooldown not done then skip.
+	if(Time.time < nextMove)
+		return;
+
+	//If out of battery do not allow any movements:
+	if (BatteryPower.currPower <= 0)
 		return;
 
 	if (Input.GetKeyDown(KeyCode.UpArrow)) { 
 		updateMovement (Direction.Up);
-		yTile++;	    
+		yTile++;
+		//if( yTile == 
 	}
 	if ( Input.GetKeyDown(KeyCode.DownArrow)){
 		updateMovement (Direction.Down);
@@ -81,14 +92,12 @@ public class RoverMovementScript : MonoBehaviour {
 		updateMovement (Direction.Left);
 		xTile--;
 	}
-	//If Tile is now out of array bound of this chunk we must move to
-	//the new chunk!
-	//TODO
+	
 
 
 	return;
 	}
-
+//===================================================================================
 	//Given to directions it will figure out whether the opposite direction
 	//has been called.
 	public bool isOpposite(Direction d1, Direction d2){
@@ -103,7 +112,7 @@ public class RoverMovementScript : MonoBehaviour {
 
 		return false;
 	}
-
+//===================================================================================
 	//Given two direction will return the proper angle to rotate byl
 	public float getAngle(Direction d1, Direction d2){
 
@@ -140,7 +149,7 @@ public class RoverMovementScript : MonoBehaviour {
 		//Should never get here...
 		return 0;
 	}
-
+//===================================================================================
 	//Get X Coordinate.
 	public int getXTile(){
 		return xTile;
@@ -150,4 +159,5 @@ public class RoverMovementScript : MonoBehaviour {
 	public int getYTile(){
 		return yTile;
 	}
+	//===================================================================================
 }

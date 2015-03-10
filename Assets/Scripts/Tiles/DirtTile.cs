@@ -10,6 +10,8 @@ public enum DirtColor {darker, lighter };
 public class DirtTile : Tile {
 	private string dirtLocation1 = "Textures/dirtTile1";
 	private string dirtLocation2 = "Textures/dirtTile2";
+	private string dirtLocation3 = "Textures/dirtTile3";
+
 	/// <summary>
 	/// The number of textures avaliable for tiles of this type. Used to return a random
 	/// number corresponding to one of the textures.
@@ -38,13 +40,15 @@ public class DirtTile : Tile {
 	}
 	//================================================================================
 	private string getRandTexture(){
-		int color = random.Next (1, numberOfTextures + 1);
-		string myTexture;
+		int color = random.Next (1, numberOfTextures + 2);
+		string myTexture = "";
 
 		if (color == 1)
 			myTexture = dirtLocation1;
-		else
+		else if (color == 2)
 			myTexture = dirtLocation2;
+		else if (color == 3)
+			myTexture = dirtLocation3;
 
 		return myTexture;
 	}

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class BatteryPower : MonoBehaviour {
 	private int maxPower;
 	private int minPower;
-	private int currPower;
+	public static int currPower;
 	public Text power;
 	public GameObject batteryPower;
 	private float delay;
@@ -17,7 +17,7 @@ public class BatteryPower : MonoBehaviour {
 		currPower = maxPower;
 		power = batteryPower.GetComponent<Text> ();
 		power.text = "Battery Power: " + currPower;
-		delay = (float)1.2;
+		delay = 1.7f;
 		nextMove = 0;
 	}
 	
@@ -41,8 +41,8 @@ public class BatteryPower : MonoBehaviour {
 	}
 
 	void usePower(){
-		currPower= currPower-5;
-		power.text= "Battery Power: " + currPower;
+		currPower = currPower - 2;
+		power.text = "Battery Power: " + currPower;
 		nextMove = Time.time + delay;
 	}
 }

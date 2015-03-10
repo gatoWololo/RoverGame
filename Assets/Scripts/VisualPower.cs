@@ -12,7 +12,7 @@ public class VisualPower : MonoBehaviour {
 	private float maxXValue;
 	private int currentHealth;
 	private int maxHealth=100;
-	float delay = (float)1.2;
+	float delay = 1.7f;
 	float nextMove = 0;
 	// Use this for initialization
 	void Start () {
@@ -28,7 +28,7 @@ public class VisualPower : MonoBehaviour {
 	void Update () {
 		if (currentHealth > 0) {
 			if ((Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.LeftArrow)) && Time.time > nextMove) {
-				currentHealth = currentHealth - 5;
+				currentHealth = currentHealth - 2;
 				HandlePower ();
 			}
 		}
