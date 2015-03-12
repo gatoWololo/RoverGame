@@ -151,23 +151,31 @@ public class RoverMovementScript : MonoBehaviour {
 	}
 	//************YO OMAR!!!!!!************ THIS IS THE SET OF FUNCTIONS FOR THE BUTTONS I AM GOING TO JUST DO BARE BONES, YOU CAN FUCK WITH THE BULL SHIT
 	public void upClick(){
-		updateMovement (Direction.Up);
-		yTile++;
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Up);
+			yTile++;
+		}
 	}
 
 	public void DownClick(){
-		updateMovement (Direction.Down);
-		yTile--;
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Down);
+			yTile--;
+		}
 	}
 
 	public void RightClick(){
-		updateMovement (Direction.Right);
-		xTile++;
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Right);
+			xTile++;
+		}
 	}
 
 	public void LeftClick(){
-		updateMovement (Direction.Left);
-		xTile--;
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Left);
+			xTile--;
+		}
 	}
 //===================================================================================
 	//Get X Coordinate.
