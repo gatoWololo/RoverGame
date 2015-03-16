@@ -67,7 +67,6 @@ public class RoverMovementScript : MonoBehaviour {
 //===================================================================================
 	// Update is called once per frame
 	void Update () {
-		bool moved = false;
 
 	//If cooldown not done then skip.
 	if(Time.time < nextMove)
@@ -77,26 +76,31 @@ public class RoverMovementScript : MonoBehaviour {
 	if (BatteryPower.currPower <= 0)
 		return;
 
-		//Attempt to move Rover.
-	moved = moveRover ();
-	
-	if (!moved)
-		return;
-	
-	//We moved so attempt to collect it whatever is in their new block.
-	Chunk currentChunk = World.world [World.currChunkX, World.currChunkY];
-	Tile currentTile = currentChunk.getTileArray()[xTile, yTile];
-	
-	//Add item to our inventory.
-	if(currentTile.hasItem() == true){
-		Item itemFound = currentTile.getItem();
-		GetComponent<RoverScript>().inventory.addElement(itemFound);
-		itemFound.destroyGameObject();
-	}
+	//Attempt to move Rover.
+	moveRover ();
+
+	//Rover moved see if there is any items to collect in the new tile!
+	collectItem ();
 
 	return;
 	}
 //===================================================================================
+	private void collectItem(){
+		//We moved so attempt to collect it whatever is in their new block.
+		Chunk currentChunk = World.world [World.currChunkX, World.currChunkY];
+		Tile currentTile = currentChunk.getTileArray()[xTile, yTile];
+		
+		//Add item to our inventory.
+		if(currentTile.hasItem() == true){
+			Item itemFound = currentTile.getItem();
+			GetComponent<RoverScript>().inventory.addElement(itemFound);
+			itemFound.destroyGameObject();
+		}
+
+		return;
+	}
+	//===================================================================================
+	//Move rover based on user input.
 	private bool moveRover(){
 		bool roverMoved = false;
 		
@@ -195,7 +199,61 @@ public class RoverMovementScript : MonoBehaviour {
 		//Should never get here...
 		return 0;
 	}
-//===================================================================================
+	//===================================================================================
+	public void upClick(){
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Up);
+			yTile++;
+
+			//We have moved to a new chunk.
+			if( yTile == World.chunkSize){
+				yTile = 0;
+				World.currChunkY++;
+			}
+		}
+		return;
+	}
+	//===================================================================================
+	public void DownClick(){
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Down);
+			yTile--;
+		}
+
+		//We have moved to a new chunk.
+		if( yTile == -1){
+			yTile = (int) World.chunkSize - 1;
+			World.currChunkY--;
+		}
+		return;
+	}
+	//===================================================================================
+	public void RightClick(){
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Right);
+			xTile++;
+		}
+		//We have moved to a new chunk.
+		if( xTile == World.chunkSize){
+			xTile = 0;
+			World.currChunkX++;
+		}
+		return;
+	}
+	//===================================================================================
+	public void LeftClick(){
+		if (nextMove < Time.time) {
+			updateMovement (Direction.Left);
+			xTile--;
+		}
+		//We have moved to a new chunk.
+		if( xTile == -1){
+			xTile = (int) World.chunkSize - 1;
+			World.currChunkX--;
+		}
+		return;
+	}
+	//===================================================================================
 	//Get X Coordinate.
 	public int getXTile(){
 		return xTile;
