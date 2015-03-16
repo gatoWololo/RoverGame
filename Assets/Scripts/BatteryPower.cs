@@ -40,9 +40,13 @@ public class BatteryPower : MonoBehaviour {
 		}
 	}
 
-	void usePower(){
-		currPower = currPower - 2;
-		power.text = "Battery Power: " + currPower;
-		nextMove = Time.time + delay;
+	public void usePower(){
+		if(currPower > minPower){
+			if(nextMove < Time.time){
+				currPower = currPower - 2;
+				power.text = "Battery Power: " + currPower;
+				nextMove = Time.time + delay;
+			}		
+		}	
 	}
 }

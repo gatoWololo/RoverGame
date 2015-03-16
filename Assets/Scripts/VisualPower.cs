@@ -49,4 +49,13 @@ public class VisualPower : MonoBehaviour {
 	private float MapValues(float x, float inMin, float inMax, float outMin, float outMax){
 		return(x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 	}
+
+	public void upClick(){
+		if (nextMove < Time.time) {
+			if (currentHealth > 0) {
+				currentHealth = currentHealth - 2;
+				HandlePower ();
+			}
+		}
+	}
 }
