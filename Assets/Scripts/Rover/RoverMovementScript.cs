@@ -254,6 +254,26 @@ public class RoverMovementScript : MonoBehaviour {
 		return;
 	}
 	//===================================================================================
+	//Temporary function to test our sequencer, this whole class really needs some cleaning
+	//up as most methods are now irrelevant.
+	public void moveRoverAction(Direction direction){
+		switch (direction) {
+		case Direction.Down:
+			DownClick ();
+			break;
+		case Direction.Up:
+			upClick ();
+			break;
+		case Direction.Left:
+			LeftClick ();
+			break;
+		case Direction.Right:
+			RightClick ();
+			break;
+		}
+		return;
+	}
+	//===================================================================================
 	//Get X Coordinate.
 	public int getXTile(){
 		return xTile;

@@ -28,7 +28,7 @@ public class MainCameraScroll : MonoBehaviour {
 		float screenHeight = Screen.height;
 
 		// set the depth of the scroll bounds around the edges of the screen
-		scrollArea = 25;
+		scrollArea = 75;
 
 		// calculate the horizontal and vertical scroll speeds relative to the mouses position within 
 		// the scroll boundary
@@ -74,7 +74,7 @@ public class MainCameraScroll : MonoBehaviour {
 		} 
 		else scrollSpeed = 0;
 
-		return (float)scrollSpeed;
+		return (float)scrollSpeed * MainCameraZoom.currentSize / 10;
 
 	}
 
@@ -100,7 +100,8 @@ public class MainCameraScroll : MonoBehaviour {
 		} 
 		else scrollSpeed = 0;
 
-		return (float)scrollSpeed;
+		return (float)scrollSpeed * MainCameraZoom.currentSize / 10;
+
 	}
 
 }

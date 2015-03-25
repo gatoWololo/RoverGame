@@ -5,7 +5,7 @@ public class MainCameraZoom : MonoBehaviour {
 	
 	public float maxZoomOut;
 	public float maxZoomIn;
-
+	public static float currentSize;
 
 	// Use this for initialization
 	void Start () {	}
@@ -13,7 +13,7 @@ public class MainCameraZoom : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		float currentSize = Camera.main.orthographicSize;
+		currentSize = Camera.main.orthographicSize;
 		maxZoomIn = 5.0f;
 		maxZoomOut = 50.0f;
 
