@@ -49,7 +49,9 @@ public class Sequencer : MonoBehaviour {
 		//If the next action is the same we increase this action's
 		//actionCounter else we create a new action and add it to the list!
 		if (lastActionStr.Equals (currentActionStr)) {
-			lastAction.increaseActionCounter (1);
+			if(lastAction.getActionCounter()<4){ // no more than 4 actions per cell.
+				lastAction.increaseActionCounter (1);
+			}
 			Debug.Log ("Counter for: " + lastActionStr + " increased to: " + lastAction.getActionCounter ());
 		}
 		else {
