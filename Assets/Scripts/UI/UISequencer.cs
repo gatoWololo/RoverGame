@@ -60,15 +60,13 @@ public class UISequencer : MonoBehaviour {
 	// This method instanciates a new GameObject from prefab, sets the images position within the sequencer grid and then sets 
 	// the image to match the last command entered using the nextAction parameter.
 
-		Debug.Log ("next action is: " + nextAction);
-
 		currentCommand = new GameObject ();
 		currentCommand = Instantiate(prefab, FirstSequencerPosition.position, FirstSequencerPosition.rotation) as GameObject;
 		currentCommand.transform.SetParent(FirstSequencerPosition);
 		calculateGridPosition ();
 		currentCommand.transform.position = currentCommand.transform.position + vector;
 
-		switch (nextAction) {
+		switch (nextAction) { //TODO integrate this into the setSubcript method and then make this a method call
 			case 1:
 				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/UpArrow1", typeof(Sprite)) as Sprite;
 				break;
@@ -87,6 +85,8 @@ public class UISequencer : MonoBehaviour {
 	}
 
 	private void calculateGridPosition(){
+		// modifies the class field 'vector' in order to calculate the offset for the next game object within the sequencer
+		// TODO remove hardcoded numbers and replace with defined constants
 		switch(currentLength%4){
 			case 0:
 				vector.x = 150f;
@@ -106,7 +106,7 @@ public class UISequencer : MonoBehaviour {
 		}
 	}
 
-	private void setSubscript(int sub, int currentAction){ 
+	private void setSubscript(int sub, int currentAction){
 		// Im sorry about this. Unity will not let me programmatically layer a UI text element on top of a UI image element, So I must 
 		// flip flop images during runtime :(
 		switch (currentAction) {
@@ -166,6 +166,7 @@ public class UISequencer : MonoBehaviour {
 	}
 
 	private void resetSequencer(){
+		// destroys all the sequencer commands and resets relevant class fields for next command sequence
 		foreach (GameObject command in currentRoutine) {
 			Destroy(command);
 		}
