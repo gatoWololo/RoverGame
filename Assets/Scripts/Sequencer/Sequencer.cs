@@ -8,6 +8,9 @@ using System.Collections.Generic;
 /// all the commands will be made my the rover by having the sequencer call the RoverMovement Script.
 /// </summary>
 public class Sequencer : MonoBehaviour {
+	private int MAXSTEPS = 4; // maximum number of steps per action (corresponds to Action.actionCounter)
+	private int MAXACTIONS = 16; // maximum number of actions in our <RoverAction>List
+
 	//This list will hold the event that need to be performed.
 	private List<RoverAction> list;
 	//We keep a reference to the most recently clicked action for ease of access
@@ -15,6 +18,12 @@ public class Sequencer : MonoBehaviour {
 	private RoverAction lastAction;
 	// Amount of time to pass before doing next command.
 	float delay = 1.8f;
+
+	// flag for UI to know to dump current Sequence
+	private bool stopFlag;
+	// tracks how many times the stop button has been pushed.
+	private int stopClicks;
+
 	//The Sequencer holds a reference to the rover movement script as it must
 	//talk to it!
 	RoverMovementScript roverMovement;
@@ -24,6 +33,8 @@ public class Sequencer : MonoBehaviour {
 		list = new List<RoverAction> ();
 		lastAction = new EmptyAction();
 		roverMovement = GetComponent<RoverMovementScript> ();
+		stopFlag = false;
+		stopClicks = 0;
 	}
 	//================================================================================
 	// Update is called once per frame
@@ -34,27 +45,30 @@ public class Sequencer : MonoBehaviour {
 	//Called by the ArrowClick and all click functions to add a new command to our
 	//list so later the rover can perfom the list of actions.
 	public void addActionToList(RoverAction action){
+		stopFlag = false;// set the clear flag back to false so the UI knows to display commands again 
 		string lastActionStr = lastAction.getActionName ();
 		string currentActionStr = action.getActionName ();
 
-		//If the next action is the same we increase this action's
-		//actionCounter else we create a new action and add it to the list!
-		if (lastActionStr.Equals (currentActionStr)) {
-			lastAction.increaseActionCounter (1);
+		// if the action is the same and the action counter is less than MAXSTEPS increase actionCounter
+		if (lastActionStr.Equals (currentActionStr) && lastAction.getActionCounter()<MAXSTEPS) {
+				lastAction.increaseActionCounter (1);
 			Debug.Log ("Counter for: " + lastActionStr + " increased to: " + lastAction.getActionCounter ());
 		}
-		else {
+		// otherwise just add it to the Action list if there is room
+		else if(list.Count<MAXACTIONS){
 			list.Add(action);
 			lastAction = action;
 			Debug.Log("New action added to list: " + currentActionStr);
 		}
 
 		return;
-	}
+	}// hale - 04/01/15
+
 	//================================================================================
 	//Wrapper for do actions functions which actually does the work. Needs to be done
 	//this way to appropriately have the delays for the rover.
 	public void doSequence(){
+		stopClicks = 0;// once we click play reset UI stop button flag
 		StartCoroutine (doActions (list));
 		return;
 	}
@@ -76,6 +90,49 @@ public class Sequencer : MonoBehaviour {
 			//else??? TODO other actions.
 		}
 	}
+	//================================================================================
+	public int getLastActionValue(){
+		// This method returns an integer associated with the last action added to the 
+		// list. It is called by the UI in order to populate the sequencer. // hale - 03/31/15
+		switch(lastAction.getActionName()){
+			case "": // empty list
+				return 0;
+				break;
+			case "moveUp":
+				return 1;
+				break;
+			case "moveDown":
+				return 2;
+				break;
+			case "moveLeft":
+				return 3;
+				break;
+			case "moveRight":
+				return 4;
+				break;
+			// Add actions here as necessary
+			// Ie Scan, Drill, etc...
+
+			default: //Error
+			return -1;
+		}
+	}// hale - 03/31/15
+
+	//================================================================================
+	public int getLastActionQty(){	// Lets the UI know how to set the command subscript
+		return lastAction.getActionCounter ();
+	}// hale - 04/01/15
+
+	//================================================================================
+	public int getLengthOfSequence(){ // Lets the UI know how many commands we have in our game list
+		return list.Count;
+	}// hale - 04/01/15
+
+	//================================================================================
+	public bool getPlayStatus (){ // Lets the UI know to clear the sequencer
+		return stopFlag;
+	}// hale - 04/01/15
+
 	//================================================================================          
 	//These actions are called when the user clicks on the UI for the rover game.
 	public void upArrowClick(){
@@ -101,11 +158,20 @@ public class Sequencer : MonoBehaviour {
 		addActionToList (moveAction);
 		return;
 	}
+
 	//================================================================================
 	//Clears the list field of this class ;)
-	public void clearList(){
-		list.Clear ();
+	public void clearList(){ 
+		// TODO chand the name of this method to reset sequence
+		// This method should stop the rover on one click and clear the list on second click
+		stopClicks++; 
+		if (stopClicks == 2) { // if stop button has been pressed twice we want to clear our list.
+			stopClicks = 0;
+			stopFlag = true;
+			list.Clear ();
+			lastAction = new EmptyAction ();// added so that the UI will know if the list has been cleared.
+		}
 		return;
-	}
+	}// hale - 04/01/15
 	//================================================================================
 }
