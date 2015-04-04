@@ -7,15 +7,19 @@ public class UISequencer : MonoBehaviour {
 
 	private int MAXSEQUENCE = 16;
 
-	private List<GameObject> currentRoutine;
+	private int nextAction; // integer value representing the action we are going to add
+	
+	private int currentLength; // length of the sequence
 
-	private int nextAction;
+	private int lastStepValue;
 
-	private int currentLength;
+	private int stepValue;
 
-	public Transform FirstSequencerPosition; // a blank GameObject used for parenting the sequencer objects within the sequence grid panel
+	private List<GameObject> currentRoutine; // holds the game objects that represent commands
 
 	GameObject currentCommand;
+
+	public Transform FirstSequencerPosition; // a blank GameObject used for parenting the sequencer objects within the sequence grid panel
 
 	private Vector3 vector;
 
@@ -34,6 +38,7 @@ public class UISequencer : MonoBehaviour {
 		sequencer = roverObject.GetComponent<Sequencer> ();
 		prefab = Resources.Load("Prefabs/sequencerStepImage", typeof(GameObject));
 		vector = new Vector3 (0f, 0f);
+		lastStepValue = 1;
 	}
 	
 	// Update is called once per frame
@@ -50,10 +55,15 @@ public class UISequencer : MonoBehaviour {
 				addActionToUISequence(nextAction);
 			}
 		}
-		if(sequencer.getLastActionQty()>1){
-			setSubscript(sequencer.getLastActionQty(),sequencer.getLastActionValue());
-		}
 
+		stepValue = sequencer.getLastActionQty (); // get the number of steps in the current command object
+
+		if (stepValue > lastStepValue) { // if it has increased set the subscript on the current command
+			if (sequencer.getLastActionQty () > 1) {
+				setSubscript (sequencer.getLastActionQty (), sequencer.getLastActionValue ());
+			}
+		}
+		lastStepValue = stepValue;
 	}
 
 	private void addActionToUISequence(int nextAction){ 
@@ -173,6 +183,7 @@ public class UISequencer : MonoBehaviour {
 		currentLength = 0;
 		vector.x = 0f;
 		vector.y = 0f;
+		lastStepValue = 1;
 	}
 
 	
