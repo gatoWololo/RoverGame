@@ -17,7 +17,7 @@ public class Sequencer : MonoBehaviour {
 	//and efficiency.
 	private RoverAction lastAction;
 	// Amount of time to pass before doing next command.
-	float delay = 1.8f;
+	float delay = 0.9f;
 
 	// flag for UI to know to dump current Sequence
 	private bool stopFlag;
@@ -52,13 +52,11 @@ public class Sequencer : MonoBehaviour {
 		// if the action is the same and the action counter is less than MAXSTEPS increase actionCounter
 		if (lastActionStr.Equals (currentActionStr) && lastAction.getActionCounter()<MAXSTEPS) {
 				lastAction.increaseActionCounter (1);
-			Debug.Log ("Counter for: " + lastActionStr + " increased to: " + lastAction.getActionCounter ());
 		}
 		// otherwise just add it to the Action list if there is room
 		else if(list.Count<MAXACTIONS){
 			list.Add(action);
 			lastAction = action;
-			Debug.Log("New action added to list: " + currentActionStr);
 		}
 
 		return;
@@ -69,26 +67,49 @@ public class Sequencer : MonoBehaviour {
 	//this way to appropriately have the delays for the rover.
 	public void doSequence(){
 		stopClicks = 0;// once we click play reset UI stop button flag
-		StartCoroutine (doActions (list));
+		StartCoroutine (doActions(list, false));
+		return;
+	}
+	//================================================================================
+	//Similar to @doSequence() but continues to loop the sequence even after it's done.
+	public void doSequenceLoop(){
+		stopClicks = 0;// once we click play reset UI stop button flag
+		StartCoroutine(doActions (list,true));
 		return;
 	}
 	//================================================================================
 	//Iterates over the list of actions performig the actions.
-	public IEnumerator doActions(List<RoverAction> actions){
-		//Iterate through the elements of our list.
-		foreach (RoverAction action in actions){
-			if(action is MoveAction){
-				Direction direction = ((MoveAction)action).getDirection();
-				//Do the command n number of times:
-				int nTimes = action.getActionCounter(); //nyTimes?
+	public IEnumerator doActions(List<RoverAction> actions, bool loopForever){
+		do {
+			//Iterate through the elements of our list.
+			for (int j = 0; j < list.Count; j++) { //Cannot use iterator as we will 
+				                                   //be changing this list while it's running.
+				RoverAction action = actions[j];
+				if (action is MoveAction) {
+					Direction direction = ((MoveAction)action).getDirection ();
+					//Do the command n number of times:
+					int nTimes = action.getActionCounter (); //nyTimes?
 
-				for(int i = 0; i < nTimes; i ++){
-					roverMovement.moveRoverAction(direction);
-					yield return new WaitForSeconds (delay);
+					//Tell movement script and by how much.
+					for(int k = 0; k < nTimes; k++){
+						//Check if there is even power to do things.
+						if(BatteryPower.currPower == 0)
+							return false;
+
+						//Move the game object!
+						roverMovement.updateMovement(direction, 1);
+						//Update the cooridinates in the grid!
+						roverMovement.updateRoverCoordinates (direction);
+						//Consume some power :)
+						BatteryPower.usePower();
+						VisualPower.consumePower = true;
+						yield return new WaitForSeconds (delay);
+					}
 				}
+
+				//else??? TODO other actions.
 			}
-			//else??? TODO other actions.
-		}
+		} while(loopForever == true && stopFlag == false);
 	}
 	//================================================================================
 	public int getLastActionValue(){

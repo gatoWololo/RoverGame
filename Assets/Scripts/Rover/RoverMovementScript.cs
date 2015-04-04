@@ -10,80 +10,141 @@ public class RoverMovementScript : MonoBehaviour {
 	//Tile the rover is in.
 	public static int xTile;
 	public static int yTile;
-	public float speed = 1.0f;
 	//We need to keep track of the current direction of rover to know how
 	//much to rotate rover by.
 	public static Direction previousDir = Direction.Up;
 	//Rover has reference to current chunk.
 	private Chunk chunk;
-	private float delay = 1.7f;
-	private float nextMove = 0.0f;
 	private int chunkSize;
-//===================================================================================
+	//Rovers current position.
+	Vector3 newPos;
+	Transform roverTransform;
+	float speed = 1.0f;
+	//===================================================================================
 	// Use this for initialization
 	void Start () {
 		xTile = 10;
 		yTile = 10;
 		chunkSize = (int)World.chunkSize;
+		roverTransform = GetComponentInParent<Transform> ();
+		//Initialize to current position.
+		newPos = roverTransform.position;
 	}
 	//===================================================================================
-	//Given the new direction to move, rover will move that way and rotate itself.
-	public void updateMovement(Direction direction){
-		int x = 0, y = 0;
-		float newRotate = 0;
+	/// <summary>
+	/// Updates the movement and rotation of the rover.
+	/// </summary>
+	/// <param name="dir">New direction to move.</param>
+	/// <param name="times">Times it is expected to move in that direction.</param>
+	public void updateMovement(Direction dir, int times){
+		//Calculate the position we should move to.
+		newPos = calculateNewPos (roverTransform.position, dir, times);
 
-		newRotate = getAngle (direction, RoverMovementScript.previousDir);
-		//Update our direction.
-		RoverMovementScript.previousDir = direction;
-
-		//Figure out new velocity for rover.
-		switch (direction) {
-			case Direction.Up:
-				x = 0;
-				y = 1;
-				break;
-			case Direction.Down:
-				x = 0;
-				y = -1;
-				break;
-			case Direction.Left:
-				x = -1;
-				y = 0;
-				break;
-			case Direction.Right:
-				x = 1;
-				y = 0;
-				break;
-		}
-
+		//Rotate to face proper direction.
+		float newRotate = getAngle (dir, RoverMovementScript.previousDir);
 		this.transform.Rotate (0, 0, newRotate);
-		this.rigidbody2D.velocity = new Vector2 (x * speed, y * speed);
-		
-		//Restart  time!
-		nextMove = Time.time + delay;
-		
+		//Update our direction.
+		RoverMovementScript.previousDir = dir;
+
 		return;
+	}
+	//===================================================================================
+	/// <summary>
+	/// Calculates the new position of the rover. Needed for the
+	/// Move torwards function.
+	/// </summary>
+	/// <returns>The new position.</returns>
+	/// <param name="currentPos">Current position.</param>
+	/// <param name="dir">Dir.</param>
+	/// <param name="times">Times.</param>
+	private Vector3 calculateNewPos(Vector3 currentPos,Direction dir,int times){
+		Vector3 newPos = new Vector3 ();
+		float x = currentPos.x;
+		float y = currentPos.y;
+
+		switch (dir) {
+		case Direction.Up:
+			newPos = new Vector3(x, y + times);
+			break;
+		case Direction.Down:
+			newPos = new Vector3(x, y - times);
+			break;
+		case Direction.Right:
+			newPos = new Vector3(x + times, y);
+			break;
+		case Direction.Left:
+			newPos = new Vector3(x - times, y);
+			break;
+		default:
+			break; //Should be impossible to happen.
+		}
+		return newPos;
 	}
 //===================================================================================
 	// Update is called once per frame
 	void Update () {
-
-	//If cooldown not done then skip.
-	if(Time.time < nextMove)
-		return;
-
-	//If out of battery do not allow any movements:
-	if (BatteryPower.currPower <= 0)
-		return;
-
-	//Attempt to move Rover.
-	moveRover ();
-
+	moveRover();
 	//Rover moved see if there is any items to collect in the new tile!
 	collectItem ();
-
 	return;
 	}
+//===================================================================================
+	//If called move the coordinates of the rover up by one depending on
+	//the prevDirection.
+public void updateRoverCoordinates (Direction dir){
+
+	switch (dir) {
+	case Direction.Up:
+		yTile++;
+		//We have moved to a new chunk.
+		if( yTile == World.chunkSize){
+			yTile = 0;
+			World.currChunkY++;
+		}
+		break;
+	case Direction.Down:
+		yTile--;
+		//We have moved to a new chunk.
+		if( yTile == -1){
+			yTile = (int) World.chunkSize - 1;
+			World.currChunkY--;
+		}
+		break;
+	case Direction.Right:
+		xTile++;
+		//We have moved to a new chunk.
+		if( xTile == World.chunkSize){
+			xTile = 0;
+			World.currChunkX++;
+		}
+		break;
+	case Direction.Left:
+		xTile--;
+		//We have moved to a new chunk.
+		if( xTile == -1){
+			xTile = (int) World.chunkSize - 1;
+			World.currChunkX--;
+		}
+		break;
+	default:
+		break; //Should be impossible to happen.
+	}
+	return;
+	
+}
+//===================================================================================
+	/// <summary>
+	/// Moves the rover, called by update() relies on the fact that newPos has been
+	// set by the sequencer.
+	/// </summary>
+	private void moveRover(){
+		float step = speed * Time.deltaTime;
+		roverTransform.position = Vector3.
+			MoveTowards(roverTransform.position, newPos, step);
+
+		return;
+	}
+
 //===================================================================================
 	private void collectItem(){
 		//We moved so attempt to collect it whatever is in their new block.
@@ -98,54 +159,6 @@ public class RoverMovementScript : MonoBehaviour {
 		}
 
 		return;
-	}
-	//===================================================================================
-	//Move rover based on user input.
-	private bool moveRover(){
-		bool roverMoved = false;
-		
-		if (Input.GetKeyDown(KeyCode.UpArrow)) { 
-			updateMovement (Direction.Up);
-			roverMoved = true;
-			yTile++;
-			//We have moved to a new chunk.
-			if( yTile == World.chunkSize){
-				yTile = 0;
-				World.currChunkY++;
-			}
-		}
-		if ( Input.GetKeyDown(KeyCode.DownArrow)){
-			updateMovement (Direction.Down);
-			roverMoved = true;
-			yTile--;
-			//We have moved to a new chunk.
-			if( yTile == -1){
-				yTile = (int) World.chunkSize - 1;
-				World.currChunkY--;
-			}
-		}
-		if (Input.GetKeyDown(KeyCode.RightArrow)){
-			updateMovement (Direction.Right);
-			roverMoved = true;
-			xTile++;
-			//We have moved to a new chunk.
-			if( xTile == World.chunkSize){
-				xTile = 0;
-				World.currChunkX++;
-			}
-		}
-		if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-			updateMovement (Direction.Left);
-			roverMoved = true;
-			xTile--;
-			//We have moved to a new chunk.
-			if( xTile == -1){
-				xTile = (int) World.chunkSize - 1;
-				World.currChunkX--;
-			}
-		}
-
-		return roverMoved;
 	}
 	//===================================================================================
 	//Given to directions it will figure out whether the opposite direction
@@ -199,81 +212,7 @@ public class RoverMovementScript : MonoBehaviour {
 		//Should never get here...
 		return 0;
 	}
-	//===================================================================================
-	public void upClick(){
-		if (nextMove < Time.time) {
-			updateMovement (Direction.Up);
-			yTile++;
 
-			//We have moved to a new chunk.
-			if( yTile == World.chunkSize){
-				yTile = 0;
-				World.currChunkY++;
-			}
-		}
-		return;
-	}
-	//===================================================================================
-	public void DownClick(){
-		if (nextMove < Time.time) {
-			updateMovement (Direction.Down);
-			yTile--;
-		}
-
-		//We have moved to a new chunk.
-		if( yTile == -1){
-			yTile = (int) World.chunkSize - 1;
-			World.currChunkY--;
-		}
-		return;
-	}
-	//===================================================================================
-	public void RightClick(){
-		if (nextMove < Time.time) {
-			updateMovement (Direction.Right);
-			xTile++;
-		}
-		//We have moved to a new chunk.
-		if( xTile == World.chunkSize){
-			xTile = 0;
-			World.currChunkX++;
-		}
-		return;
-	}
-	//===================================================================================
-	public void LeftClick(){
-		if (nextMove < Time.time) {
-			updateMovement (Direction.Left);
-			xTile--;
-		}
-		//We have moved to a new chunk.
-		if( xTile == -1){
-			xTile = (int) World.chunkSize - 1;
-			World.currChunkX--;
-		}
-		return;
-	}
-	//===================================================================================
-	//Temporary function to test our sequencer, this whole class really needs some cleaning
-	//up as most methods are now irrelevant.
-	public void moveRoverAction(Direction direction){
-		switch (direction) {
-		case Direction.Down:
-			DownClick ();
-			break;
-		case Direction.Up:
-			upClick ();
-			break;
-		case Direction.Left:
-			LeftClick ();
-			break;
-		case Direction.Right:
-			RightClick ();
-			break;
-		}
-		return;
-	}
-	//===================================================================================
 	//Get X Coordinate.
 	public int getXTile(){
 		return xTile;

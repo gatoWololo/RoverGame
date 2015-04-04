@@ -17,7 +17,6 @@ public class BlinkingLight : MonoBehaviour {
 	
 
 	void Update(){
-		Debug.Log ("Time is: " + Time.time);
 		//compute current alpha value of sprite based upon stopwatch value
 		float t = (Time.time - fadeoutTimer) / duration;
 		blinkingSprite.color = new Color (1f, 1f, 1f, Mathf.SmoothStep (maximum,minimum,t));

@@ -3,10 +3,10 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class BatteryPower : MonoBehaviour {
-	private int maxPower;
-	private int minPower;
+	private static int maxPower;
+	private static int minPower;
 	public static int currPower;
-	public Text power;
+	public static Text power;
 	public GameObject batteryPower;
 	private float delay;
 	private float nextMove;
@@ -20,33 +20,14 @@ public class BatteryPower : MonoBehaviour {
 		delay = 1.7f;
 		nextMove = 0;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (currPower > minPower) {
 
-			if (Input.GetKeyDown (KeyCode.UpArrow) && Time.time > nextMove) {
-				usePower ();
-			}
-			if (Input.GetKeyDown (KeyCode.DownArrow) && Time.time > nextMove) {
-				usePower ();
-			}
-			if (Input.GetKeyDown (KeyCode.RightArrow) && Time.time > nextMove) {
-				usePower ();
-			}
-			if (Input.GetKeyDown (KeyCode.LeftArrow) && Time.time > nextMove) {
-				usePower ();
-			}
-		}
-	}
 
-	public void usePower(){
+	static public void usePower(){
 		if(currPower > minPower){
-			if(nextMove < Time.time){
-				currPower = currPower - 2;
-				power.text = "Battery Power: " + currPower;
-				nextMove = Time.time + delay;
-			}		
-		}	
-	}
+			currPower = currPower - 2;
+			power.text = "Battery Power: " + currPower;
+		}
+		return;
+	}	
+
 }
