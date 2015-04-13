@@ -24,6 +24,9 @@ public class Sequencer : MonoBehaviour {
 	// tracks how many times the stop button has been pushed.
 	private int stopClicks;
 
+	// stops the player from initializing the doSequences and crashing the game if the roverActionlist is empty
+	private bool sequencerEmpty;
+
 	//The Sequencer holds a reference to the rover movement script as it must
 	//talk to it!
 	RoverMovementScript roverMovement;
@@ -34,6 +37,7 @@ public class Sequencer : MonoBehaviour {
 		lastAction = new EmptyAction();
 		roverMovement = GetComponent<RoverMovementScript> ();
 		stopFlag = false;
+		sequencerEmpty = true;
 		stopClicks = 0;
 	}
 	//================================================================================
@@ -45,6 +49,7 @@ public class Sequencer : MonoBehaviour {
 	//Called by the ArrowClick and all click functions to add a new command to our
 	//list so later the rover can perfom the list of actions.
 	public void addActionToList(RoverAction action){
+		sequencerEmpty = false;
 		stopFlag = false;// set the clear flag back to false so the UI knows to display commands again 
 		string lastActionStr = lastAction.getActionName ();
 		string currentActionStr = action.getActionName ();
@@ -66,15 +71,19 @@ public class Sequencer : MonoBehaviour {
 	//Wrapper for do actions functions which actually does the work. Needs to be done
 	//this way to appropriately have the delays for the rover.
 	public void doSequence(){
-		stopClicks = 0;// once we click play reset UI stop button flag
-		StartCoroutine (doActions(list, false));
+		if (!sequencerEmpty) {
+			stopClicks = 0;// once we click play reset UI stop button flag
+			StartCoroutine (doActions(list, false));
+		}
 		return;
 	}
 	//================================================================================
 	//Similar to @doSequence() but continues to loop the sequence even after it's done.
 	public void doSequenceLoop(){
-		stopClicks = 0;// once we click play reset UI stop button flag
-		StartCoroutine(doActions (list,true));
+		if (!sequencerEmpty) {
+			stopClicks = 0;// once we click play reset UI stop button flag
+			StartCoroutine (doActions (list, true));
+		}
 		return;
 	}
 	//================================================================================
@@ -185,8 +194,10 @@ public class Sequencer : MonoBehaviour {
 	public void clearList(){ 
 		// TODO chand the name of this method to reset sequence
 		// This method should stop the rover on one click and clear the list on second click
+
 		stopClicks++; 
 		if (stopClicks == 2) { // if stop button has been pressed twice we want to clear our list.
+			sequencerEmpty = true;
 			stopClicks = 0;
 			stopFlag = true;
 			list.Clear ();

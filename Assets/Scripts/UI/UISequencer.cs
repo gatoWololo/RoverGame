@@ -39,6 +39,7 @@ public class UISequencer : MonoBehaviour {
 		prefab = Resources.Load("Prefabs/sequencerStepImage", typeof(GameObject));
 		vector = new Vector3 (0f, 0f);
 		lastStepValue = 1;
+
 	}
 	
 	// Update is called once per frame
@@ -66,11 +67,12 @@ public class UISequencer : MonoBehaviour {
 		lastStepValue = stepValue;
 	}
 
+
+
 	private void addActionToUISequence(int nextAction){ 
 	// This method instanciates a new GameObject from prefab, sets the images position within the sequencer grid and then sets 
 	// the image to match the last command entered using the nextAction parameter.
 
-		currentCommand = new GameObject ();
 		currentCommand = Instantiate(prefab, FirstSequencerPosition.position, FirstSequencerPosition.rotation) as GameObject;
 		currentCommand.transform.SetParent(FirstSequencerPosition);
 		calculateGridPosition ();
@@ -99,7 +101,7 @@ public class UISequencer : MonoBehaviour {
 		// TODO remove hardcoded numbers and replace with defined constants
 		switch(currentLength%4){
 			case 0:
-				vector.x = 150f;
+				vector.x = 120f;
 				break;
 			case 1:
 				if(currentLength>1){
@@ -108,10 +110,10 @@ public class UISequencer : MonoBehaviour {
 				vector.x = 0f;
 				break;
 			case 2:
-				vector.x = 50f;
+				vector.x = 40f;
 				break;
 			case 3:
-				vector.x = 100f;
+				vector.x = 80f;
 				break;
 		}
 	}
