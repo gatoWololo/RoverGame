@@ -60,7 +60,6 @@ public class UISequencer : MonoBehaviour {
 	// This method instanciates a new GameObject from prefab, sets the images position within the sequencer grid and then sets 
 	// the image to match the last command entered using the nextAction parameter.
 
-		currentCommand = new GameObject ();
 		currentCommand = Instantiate(prefab, FirstSequencerPosition.position, FirstSequencerPosition.rotation) as GameObject;
 		currentCommand.transform.SetParent(FirstSequencerPosition);
 		calculateGridPosition ();

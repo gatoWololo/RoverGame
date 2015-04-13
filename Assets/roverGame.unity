@@ -2253,7 +2253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d98c025e2eba4644ad4baf554bc4a83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  power: {fileID: 1660760505}
   batteryPower: {fileID: 1660760502}
 --- !u!114 &1660760505
 MonoBehaviour:

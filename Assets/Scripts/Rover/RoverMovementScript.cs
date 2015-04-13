@@ -179,7 +179,7 @@ public void updateRoverCoordinates (Direction dir){
 	//Given two direction will return the proper angle to rotate byl
 	public float getAngle(Direction d1, Direction d2){
 
-		if (isOpposite (d1, RoverMovementScript.previousDir))
+		if (isOpposite (d1, d2))
 			return 180.0f;
 	
 		switch (d2) {
