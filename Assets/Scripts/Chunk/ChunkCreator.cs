@@ -5,8 +5,10 @@ using System;
 public class ChunkCreator {
 	//Dimensions of array
 	public const int chunkSize = 50;
-	private readonly Type[] tileTypes = {typeof(DirtTile)};
+	private readonly Type[] tileTypes = {typeof(SnowTile)};
 	private System.Random randomPicker;
+	private int lakeSizeX = 5;
+	private int lakeSizeY = 5;
 	//================================================================================
 	//Constructor for class (Constructs).
 	public ChunkCreator(){
@@ -58,18 +60,24 @@ public class ChunkCreator {
 	//x and y are the indices for the center of the lake in ther array.
 	//xCoord and y Coord are the actual float location of the sprites on the map.
 	private void makeLake(int x, int y, Tile[,] tileArray, float xCoord, float yCoord, GameObject chunkObject){
-		for (int i = -5; i < 5; i ++)
-			for (int j = -5; j < 5; j++) {
-				//Keep corners of array dirt!
+		//New tile to make for every loop iteration.
+		Tile newTile;
+		for (int i = -lakeSizeX; i < lakeSizeX; i ++)
+			for (int j = -lakeSizeY; j < lakeSizeY; j++) {
+				Vector2 position = new Vector2(x + xCoord + i,y + yCoord + j);
+
+				//Keep corners of snow dirt!
 				if(Math.Abs(i) >=4 && Math.Abs(j) >=3)
-				   continue;
+					continue;
+
+				//If we are at the edges we wanna use the the edge tiles.
+				newTile = getProperEdgeTile(i,j, position);
+
 				//Don't ask why the indices work... they just do!
 				UnityEngine.Object.Destroy(tileArray[x + i, y + j].getGameObject());
-				Vector2 position = new Vector2(x + xCoord + i,y + yCoord + j);
-				tileArray[x + i, y + j]  = new WaterTile(position);
+				tileArray[x + i, y + j]  = newTile;
 				tileArray[x + i, y + j].getGameObject().transform.parent = chunkObject.transform;
 				tileArray[x + i, y + j].changeAlpha(0.3f);
-
 			}
 
 		//Make corners of lake dirt!
@@ -129,4 +137,21 @@ public class ChunkCreator {
 
 		return results;
 	}
+	//================================================================================
+	private Tile getProperEdgeTile(int i, int j,Vector2 position){
+		if (j + 1 == lakeSizeX)
+			return new CornerSnowTile (position, Direction.Down);
+		if (j == - lakeSizeX)
+			return new CornerSnowTile (position, Direction.Up);
+		if (i + 1 == lakeSizeY)
+			return new CornerSnowTile (position, Direction.Left);
+		if (i == - lakeSizeY)
+			return new CornerSnowTile (position, Direction.Right);
+
+		return new DirtTile(position);
+		
+		
+	}
+	//================================================================================
+
 }
