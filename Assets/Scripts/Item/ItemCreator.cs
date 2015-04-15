@@ -11,7 +11,7 @@ public class ItemCreator {
 	//Array of items to use to randomly populate the map.
 	private readonly Type[] itemTypes = {typeof(Battery), typeof(ScrapMetal)};
 	//Number of random items per chunk.
-	private readonly int itemAmount = 15;
+	private readonly int itemAmount = 1500;
 	//Get random tiles to place items.
 	System.Random randomInt;
 	//================================================================================

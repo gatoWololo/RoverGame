@@ -67,9 +67,9 @@ public class ChunkCreator {
 		makeMountain(x,y, tileArray, xCoord, yCoord, chunkObject, false);
 
 		//This is beggining item for tutorial.
-		tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 14)));
+		tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 18)));
 
-
+		itemCreator.addItemsToChunk (chunk);
 		return chunk;
 	}
 	//================================================================================
