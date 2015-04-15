@@ -73,6 +73,7 @@ public class Sequencer : MonoBehaviour {
 	//Wrapper for do actions functions which actually does the work. Needs to be done
 	//this way to appropriately have the delays for the rover.
 	public void doSequence(){
+
 		//Make sure our sequence is empty and the user cannot spam the button.
 		if (!sequencerEmpty && !isDoingSequence) {
 			stopClicks = 0;// once we click play reset UI stop button flag
@@ -83,6 +84,7 @@ public class Sequencer : MonoBehaviour {
 	//================================================================================
 	//Similar to @doSequence() but continues to loop the sequence even after it's done.
 	public void doSequenceLoop(){
+
 		//Make sure our sequence is empty and the user cannot spam the button.
 		if (!sequencerEmpty && !isDoingSequence) {
 			stopClicks = 0;// once we click play reset UI stop button flag
