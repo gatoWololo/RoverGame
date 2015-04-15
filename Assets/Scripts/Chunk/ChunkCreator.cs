@@ -9,8 +9,8 @@ public class ChunkCreator {
 	private static System.Random randomPicker;
 	private int lakeSizeX = 5;
 	private int lakeSizeY = 5;
-	private int mountainSizeX = 10;
-	private int moutainSizeY = 1;
+	private int mountainSizeX = 15;
+	private int moutainSizeY = 2;
 	//================================================================================
 	//Constructor for class (Constructs).
 	static ChunkCreator(){
@@ -55,7 +55,7 @@ public class ChunkCreator {
 		}
 
 		//Make rock features for the chunk.
-		spots = getRandomPositionTiles (size, 12, 3);
+		spots = getRandomPositionTiles (size, 16, 3);
 		x = (int) spots[0].x;
 		y = (int) spots[0].y;
 		makeMountain(x,y, tileArray, xCoord, yCoord, chunkObject, false);
@@ -67,9 +67,9 @@ public class ChunkCreator {
 		makeMountain(x,y, tileArray, xCoord, yCoord, chunkObject, false);
 
 		//This is beggining item for tutorial.
-		tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 14)));
+		tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 18)));
 
-
+		itemCreator.addItemsToChunk (chunk);
 		return chunk;
 	}
 	//================================================================================

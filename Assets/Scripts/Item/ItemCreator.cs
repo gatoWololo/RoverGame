@@ -11,7 +11,7 @@ public class ItemCreator {
 	//Array of items to use to randomly populate the map.
 	private readonly Type[] itemTypes = {typeof(Battery), typeof(ScrapMetal)};
 	//Number of random items per chunk.
-	private readonly int itemAmount = 15;
+	private readonly int itemAmount = 100;
 	//Get random tiles to place items.
 	System.Random randomInt;
 	//================================================================================
@@ -52,6 +52,9 @@ public class ItemCreator {
 			//Get new item and place it on the map!
 			Item newItem = getRandomItem(new Vector2(xPosition + xTile, yPosition + yTile));
 			thisTile.setItem(newItem);
+			//Set item as child of parent.
+			newItem.getGameObject().transform.parent = thisTile.getGameObject().transform;
+
 		}
 		return;
 	}

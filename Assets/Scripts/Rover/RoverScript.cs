@@ -12,6 +12,12 @@ public class RoverScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		inventory = new Inventory ();
+		//Initialize Position of rover!
+		Transform roverPosition = GetComponentInParent<Transform> ();
+		float s = World.chunkSize;
+		//Rover starts at the [10][10] tile!
+		float offset = 10.5f;
+		roverPosition.transform.position = new Vector3 (s + 10.5f, s + 10.5f, 0f);
 	}
 
 
