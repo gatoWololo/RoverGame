@@ -10,7 +10,14 @@ public class MainCameraScroll : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		//Initialize Position of Camera!
+		Transform pos = GetComponentInParent<Transform> ();
+		float s = World.chunkSize;
+		//Camera starts at the [10][10] tile!
+		float offset = 10.5f;
+		pos.transform.position = new Vector3 (s + 10.5f, s + 10.5f, -30f);
+
+		return;
 	}
 	
 	// Update is called once per frame

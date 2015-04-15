@@ -31,6 +31,7 @@ public class MountainTile : Tile {
 		gameObject.name = "moutainTile";
 
 		canPassThroughIt = false;
+		canDrill = true;
 		return;
 	}
 	//================================================================================

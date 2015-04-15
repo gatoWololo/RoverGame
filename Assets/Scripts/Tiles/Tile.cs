@@ -9,6 +9,8 @@ public abstract class Tile {
 	public bool isVisible;
 	// Whether or not the rover can travel through this type  of tiles.
 	protected bool canPassThroughIt;
+	//Whether or not the rover can drill this type of tile.
+	protected bool canDrill;
 	//Chunk this tile belongs to.
 	private int iChunk;
 	private int jChunk;
@@ -21,6 +23,8 @@ public abstract class Tile {
 	protected BoxCollider2D collider;
 	//Tile may contain an item on top of it :)
 	Item item;
+	//Tiles know their position!
+	protected Vector2 position;
 	//================================================================================
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Tile"/> class.
@@ -38,14 +42,15 @@ public abstract class Tile {
 		//Add the script to our game object, and set it's color so it can be restored when a
 		//collision happens.
 		TileExploration te = gameObject.AddComponent<TileExploration>();
-		te.saveColor (renderer.color);
-
+	
 		//Set position and hitbox.
 		Vector3 finalPos = new Vector3 (position.x, position.y, 0);
 		gameObject.transform.position = finalPos;
 		collider.size = new Vector3 (0.1f, 0.1f);
 		//Tiles can be passed through unless specified otherwise in subclass.
 		canPassThroughIt = true;
+		canDrill = false;
+		this.position = position;
 		return;
 	}
 	//================================================================================
@@ -111,4 +116,13 @@ public abstract class Tile {
 	public bool getCanPassThrough(){
 		return canPassThroughIt;
 	}
+	//================================================================================
+	public bool getcanDrill(){
+		return canDrill;
+	}
+	//================================================================================
+	public Vector2 getPosition(){
+		return position;
+	} 
+	//================================================================================
 }

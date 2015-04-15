@@ -138,8 +138,7 @@ public void updateRoverCoordinates (Direction dir){
 	default:
 		break; //Should be impossible to happen.
 	}
-	Debug.Log ("X Coord: " + xTile);
-	Debug.Log ("Y Coord: " + yTile);
+
 	return;
 	
 }
@@ -301,5 +300,65 @@ public void updateRoverCoordinates (Direction dir){
 		Tile[,] tileArray = currentChunk.getTileArray();
 		return tileArray [x, y];
 	}
-		//===================================================================================
+	//===================================================================================
+	/// <summary>
+	/// Sets the adjacent tile given a direction. Very similar to updateCoordinates
+	/// and get Adjacent tile, I don't even know if these should be in rover movement
+	/// script anymore...
+	/// </summary>
+	/// <returns>The adjacent tile.</returns>
+	/// <param name="dir">Dir.</param>
+	static public void setAdjacentTile(Tile tile, Direction dir){
+		int x = xTile;
+		int y = yTile;
+		int xChunk = World.currChunkX;
+		int yChunk = World.currChunkY;
+		
+		switch (dir) {
+		case Direction.Up:
+			y++;
+			//We have moved to a new chunk.
+			if(y == World.chunkSize){
+				y= 0;
+				yChunk++;
+			}
+			break;
+		case Direction.Down:
+			y--;
+			//We have moved to a new chunk.
+			if( y == -1){
+				y = (int) World.chunkSize - 1;
+				yChunk--;
+			}
+			break;
+		case Direction.Right:
+			x++;
+			//We have moved to a new chunk.
+			if( x == World.chunkSize){
+				x = 0;
+				xChunk++;
+			}
+			break;
+		case Direction.Left:
+			x--;
+			//We have moved to a new chunk.
+			if( x == -1){
+				x = (int) World.chunkSize - 1;
+				xChunk--;
+			}
+			break;
+		default:
+			break; //Should be impossible to happen.
+		}
+		Chunk currentChunk = World.world [xChunk, yChunk];
+		Tile[,] tileArray = currentChunk.getTileArray();
+		tileArray [x, y] = tile;
+
+		return;
+	}
+	//===================================================================================
+	public Direction getDirection(){
+		return previousDir;
+	}
+	//===================================================================================
 }

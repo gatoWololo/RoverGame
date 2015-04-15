@@ -55,8 +55,13 @@ public class LanderTile : Tile {
 					mainTile = true;
 				Vector2 position = new Vector2 (chunkPosition + i + x, chunkPosition + j + y);
 				//Destroy current snow tile:
-				UnityEngine.Object.Destroy(tileArray[x + i, y + j].getGameObject());
-				tileArray [x + i,y + j] = new LanderTile (position, mainTile, passThrough);
+				Tile myTile = tileArray[x + i, y + j];
+				UnityEngine.Object.Destroy(myTile.getGameObject());
+				myTile = new LanderTile (position, mainTile, passThrough);
+				tileArray[x + i, y + j] = myTile;
+				//Set tile as child of chunk.
+				myTile.getGameObject().transform.parent = chunk.getGameObject().transform;
+
 			}
 		}
 		return;

@@ -57,4 +57,9 @@ public class Item {
 	public string getName(){
 		return itemName;
 	}
+	//================================================================================
+	public GameObject getGameObject(){
+		return gameObject;
+
+	}
 }
