@@ -37,14 +37,23 @@ public class RoverMovementScript : MonoBehaviour {
 	/// <param name="dir">New direction to move.</param>
 	/// <param name="times">Times it is expected to move in that direction.</param>
 	public void updateMovement(Direction dir, int times){
-		//Calculate the position we should move to.
-		newPos = calculateNewPos (roverTransform.position, dir, times);
+		//Check to see if rover should be able to based on adjacent tile.
+		if (shouldMove(dir) == true) {
+			//Calculate the position we should move to.
+			newPos = calculateNewPos (roverTransform.position, dir, times);
+			//Update the cooridinates in the grid!
+			updateRoverCoordinates (dir);
+			//Consume some power :)
+			BatteryPower.usePower();
+			VisualPower.consumePower = true;
+		}
 
 		//Rotate to face proper direction.
 		float newRotate = getAngle (dir, RoverMovementScript.previousDir);
 		this.transform.Rotate (0, 0, newRotate);
 		//Update our direction.
 		RoverMovementScript.previousDir = dir;
+
 
 		return;
 	}
@@ -129,6 +138,8 @@ public void updateRoverCoordinates (Direction dir){
 	default:
 		break; //Should be impossible to happen.
 	}
+	Debug.Log ("X Coord: " + xTile);
+	Debug.Log ("Y Coord: " + yTile);
 	return;
 	
 }
@@ -148,9 +159,7 @@ public void updateRoverCoordinates (Direction dir){
 //===================================================================================
 	private void collectItem(){
 		//We moved so attempt to collect it whatever is in their new block.
-		Chunk currentChunk = World.world [World.currChunkX, World.currChunkY];
-		Tile currentTile = currentChunk.getTileArray()[xTile, yTile];
-		
+		Tile currentTile = getCurrentTile();
 		//Add item to our inventory.
 		if(currentTile.hasItem() == true){
 			Item itemFound = currentTile.getItem();
@@ -223,4 +232,74 @@ public void updateRoverCoordinates (Direction dir){
 		return yTile;
 	}
 	//===================================================================================
+	/// <summary>
+	/// Given a direction it will determine if we can pass through tile.
+	/// </summary>
+	/// <returns><c>true</c>, if move we should be able to move, <c>false</c> otherwise.</returns>
+	/// <param name="dir">Dir.</param>
+	private bool shouldMove(Direction dir){
+		Tile currentTile = getAdjacentTile (dir);
+		return currentTile.getCanPassThrough ();
+	}
+	//===================================================================================
+	/// <summary>
+	/// Based on the state of the world, return the tile the rover is currently on.
+	/// </summary>
+	static public Tile getCurrentTile(){
+		Chunk currentChunk = World.world [World.currChunkX, World.currChunkY];
+		return currentChunk.getTileArray()[xTile, yTile];
+	}
+	//===================================================================================
+	/// <summary>
+	/// Gets the adjacent tile given a direction. Very similar to updateCoordinates.
+	/// </summary>
+	/// <returns>The adjacent tile.</returns>
+	/// <param name="dir">Dir.</param>
+	static public Tile getAdjacentTile(Direction dir){
+		int x = xTile;
+		int y = yTile;
+		int xChunk = World.currChunkX;
+		int yChunk = World.currChunkY;
+	
+		switch (dir) {
+		case Direction.Up:
+			y++;
+			//We have moved to a new chunk.
+			if(y == World.chunkSize){
+				y= 0;
+				yChunk++;
+			}
+			break;
+		case Direction.Down:
+			y--;
+			//We have moved to a new chunk.
+			if( y == -1){
+				y = (int) World.chunkSize - 1;
+				yChunk--;
+			}
+			break;
+		case Direction.Right:
+			x++;
+			//We have moved to a new chunk.
+			if( x == World.chunkSize){
+				x = 0;
+				xChunk++;
+			}
+			break;
+		case Direction.Left:
+			x--;
+			//We have moved to a new chunk.
+			if( x == -1){
+				x = (int) World.chunkSize - 1;
+				xChunk--;
+			}
+			break;
+		default:
+			break; //Should be impossible to happen.
+		}
+		Chunk currentChunk = World.world [xChunk, yChunk];
+		Tile[,] tileArray = currentChunk.getTileArray();
+		return tileArray [x, y];
+	}
+		//===================================================================================
 }

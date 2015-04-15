@@ -19,7 +19,7 @@ public class World : MonoBehaviour {
 	public static float chunkSize = 50.0f;
 	//Tiny offset of the world due to tile size.
 	private float offset = 0.5f;
-	//GameObject containing the wolrd O_o.
+	//GameObject containing the world O_o.
 	private GameObject gameObject;
 	//Box collider for chunks. When rover hits a chunk collider it will
 	//Signal the next chunk in the world to be generated.
@@ -33,6 +33,7 @@ public class World : MonoBehaviour {
 	private float sizeOfWorld;
 	//Set the end of the world 3 tiles short in all directions!
 	private float colliderSize = 3.0f;
+	private static System.Random fluxPicker;
 	//================================================================================
 	// Use this for initialization
 	void Start () {
@@ -45,6 +46,13 @@ public class World : MonoBehaviour {
 		for (int i = 0; i < s; i++)
 			for (int j = 0; j < s; j++)
 				world [i, j] = chunkCreator.createNewChunk (j * chunkSize + offset, i * chunkSize + offset);
+
+		//Create the base on the world[1,1] spot.
+		LanderTile.createLander(world [1,1], chunkSize + offset);
+
+		//Pick place to put in flux Capacitor.
+		fluxPicker = new System.Random ();
+		addFluxCapacitor ();
 
 		//Initialize to beggining chunk index.
 		currChunkX = 1;
@@ -77,8 +85,6 @@ public class World : MonoBehaviour {
 		right.points = getEdgePoints (topRight, bottomRight);
 		right.isTrigger = true;
 		
-		//Add script to handle Hitbox of rover againts edges.
-		//gameObject.AddComponent<ChunkExploration>();
 		gameObject.name = "world";
 
 		return;
@@ -98,6 +104,31 @@ public class World : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+	//================================================================================
+	private void addFluxCapacitor(){
+		//Pick chunk put it in.
+		int fluxChunkX = fluxPicker.Next(0, maxWorldChunks -1);
+		int fluxChunkY = fluxPicker.Next(0, maxWorldChunks -1);
+		Chunk chunk = world [fluxChunkX, fluxChunkY];
+		Tile[,] tileArray = chunk.getTileArray ();
+		float xPosition = chunk.getPositionX();
+		float yPosition = chunk.getPositionY ();
+
+		while(true){
+			int fluxX = fluxPicker.Next (0, (int) chunkSize);
+			int fluxY = fluxPicker.Next (0, (int) chunkSize);
+			Tile myTile = tileArray[fluxX, fluxY];
+			//Keep going!
+			if(myTile.hasItem() == false){
+				//Else we have found where to put it!.
+				Vector2 position = new Vector2(fluxX + xPosition, fluxY + yPosition);
+				myTile.setItem(new FluxCapacitor(position));
+				break;
+			}
+		}
+
+		return;
 	}
 	//================================================================================
 }

@@ -24,7 +24,7 @@ public class BatteryPower : MonoBehaviour {
 
 	static public void usePower(){
 		if(currPower > minPower){
-			currPower = currPower - 2;
+			currPower = currPower - 1;
 			power.text = "Battery Power: " + currPower;
 		}
 		return;

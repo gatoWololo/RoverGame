@@ -4,8 +4,8 @@ using System.Collections;
 //Abstract Class that holds items that the user will use to derive all
 //actual objects the Rover can hold. 
 public class Item {
-	private int itemId;
-	private string itemName;
+	protected int itemId;
+	protected string itemName;
 
 	//Actual game object that Unity uses, this class wraps it all.
 	protected GameObject gameObject;
@@ -13,7 +13,7 @@ public class Item {
 	protected BoxCollider2D collider;
 	//================================================================================
 	//Le constructor!
-	public Item(int itemId, string itemName, Vector2 position){
+	public Item(Vector2 position){
 		gameObject = new GameObject ();
 		renderer = gameObject.AddComponent<SpriteRenderer> ();
 		collider = gameObject.AddComponent<BoxCollider2D>();
@@ -21,8 +21,8 @@ public class Item {
 		gameObject.AddComponent<ItemExploration> ();
 
 		//Set item information.
-		this.itemId = itemId;
-		this.itemName = itemName;
+		this.itemId = -1;
+		this.itemName = "Item";
 
 		//Set position of item in the world.
 		Vector3 finalPosition = new Vector3 (position.x, position.y, 0);

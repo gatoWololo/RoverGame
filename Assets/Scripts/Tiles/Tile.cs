@@ -24,15 +24,6 @@ public abstract class Tile {
 	//================================================================================
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Tile"/> class.
-	/// Default constructor used by array of Tiles.
-	/// </summary>
-	protected Tile(){
-		item = null;
-		return;
-	}
-	//================================================================================
-	/// <summary>
-	/// Initializes a new instance of the <see cref="Tile"/> class.
 	/// All tile objects should have this basic properties so we initialize them.
 	/// This constructor is called from the derived class' constructor.
 	/// </summary>
@@ -53,7 +44,8 @@ public abstract class Tile {
 		Vector3 finalPos = new Vector3 (position.x, position.y, 0);
 		gameObject.transform.position = finalPos;
 		collider.size = new Vector3 (0.1f, 0.1f);
-
+		//Tiles can be passed through unless specified otherwise in subclass.
+		canPassThroughIt = true;
 		return;
 	}
 	//================================================================================
@@ -115,5 +107,8 @@ public abstract class Tile {
 		this.item = null;
 		return item;
 	}
-
+	//================================================================================
+	public bool getCanPassThrough(){
+		return canPassThroughIt;
+	}
 }

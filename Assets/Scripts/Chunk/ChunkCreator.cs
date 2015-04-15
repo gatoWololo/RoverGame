@@ -6,14 +6,15 @@ public class ChunkCreator {
 	//Dimensions of array
 	public const int chunkSize = 50;
 	private readonly Type[] tileTypes = {typeof(SnowTile)};
-	private System.Random randomPicker;
+	private static System.Random randomPicker;
 	private int lakeSizeX = 5;
 	private int lakeSizeY = 5;
+	private int mountainSizeX = 10;
+	private int moutainSizeY = 1;
 	//================================================================================
 	//Constructor for class (Constructs).
-	public ChunkCreator(){
+	static ChunkCreator(){
 		randomPicker = new System.Random ();
-
 		return;
 	}
 	//================================================================================
@@ -26,10 +27,11 @@ public class ChunkCreator {
 	/// <param name="yCoord">Y coordinate.</param>
 	public Chunk createNewChunk(float xCoord, float yCoord){
 		int size = ChunkCreator.chunkSize;
-		Chunk chunk = new Chunk (xCoord, yCoord);;
-
+		Chunk chunk = new Chunk (xCoord, yCoord);
+		ItemCreator itemCreator = new ItemCreator ();
 		Tile[,] tileArray = chunk.getTileArray();
 		GameObject chunkObject = chunk.getGameObject();
+		int x, y;
 
 		/*Initialize all tiles.*/
 		for (int i = 0; i < size; i++){
@@ -45,14 +47,29 @@ public class ChunkCreator {
 		}
 
 		/*Pick three random spots to make lakes out of for each tile.*/
-		Vector2[] spots = getLakeRandomTiles (size);
+		Vector2[] spots = getRandomPositionTiles (size, 10, 3);
 		for (int i = 0; i < 3; i++) {
-			int x = (int) spots[i].x;
-			int y = (int) spots[i].y;
+			x = (int) spots[i].x;
+			y = (int) spots[i].y;
 			makeLake(x,y, tileArray, xCoord, yCoord, chunkObject);
 		}
 
-		tileArray [11, 14].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 14)));
+		//Make rock features for the chunk.
+		spots = getRandomPositionTiles (size, 12, 3);
+		x = (int) spots[0].x;
+		y = (int) spots[0].y;
+		makeMountain(x,y, tileArray, xCoord, yCoord, chunkObject, false);
+		x = (int) spots[1].x;
+		y = (int) spots[1].y;
+		makeMountain(x,y, tileArray, xCoord, yCoord, chunkObject, true);
+		x = (int) spots[2].x;
+		y = (int) spots[2].y;
+		makeMountain(x,y, tileArray, xCoord, yCoord, chunkObject, false);
+
+		//This is beggining item for tutorial.
+		tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 14)));
+
+
 		return chunk;
 	}
 	//================================================================================
@@ -84,15 +101,46 @@ public class ChunkCreator {
 		return;
 	}
 	//================================================================================
+	//Make the actual mountain with the given info.
+	//x and y are the indices for the center of the lake in ther array.
+	//xCoord and y Coord are the actual float location of the sprites on the map.
+	//Flip is used to get some variety in formations.
+	private void makeMountain(int x, int y, Tile[,] tileArray, float xCoord, float yCoord, GameObject chunkObject, bool flip){
+		//New tile to make for every loop iteration.
+		Tile newTile;
+		int xRange = mountainSizeX;
+		int yRange = moutainSizeY;
+
+		if(flip == true){
+			xRange = moutainSizeY;
+			yRange = mountainSizeX;
+		}
+		for (int i = -xRange; i < xRange; i ++)
+			for (int j = -yRange; j < yRange; j++) {
+				Vector2 position = new Vector2(x + xCoord + i,y + yCoord + j);
+				newTile = new MountainTile(position);
+
+				//Don't ask why the indices work... they just do!
+				UnityEngine.Object.Destroy(tileArray[x + i, y + j].getGameObject());
+				tileArray[x + i, y + j]  = newTile;
+				tileArray[x + i, y + j].getGameObject().transform.parent = chunkObject.transform;
+				tileArray[x + i, y + j].changeAlpha(0.3f);
+			}
+		
+		//Make corners of lake dirt!
+		return;
+	}
+	//================================================================================
 	//Choses random tiles in each chunk to create lakes, makes sure tiles are far enough
 	//from each other and keeps trying until it finds some.
-	private Vector2[] getLakeRandomTiles(int size){
+	private Vector2[] getRandomPositionTiles(int chunkSize, int distanceFromEdge, int number){
 		Vector2[] indices = new Vector2[3];
 		int picked = 0;
 		//Keep trying until we find 3 good spots.
-		while (picked < 3) {
+		while (picked < number) {
 			//Pick a point not too close to the edge of the chunk!
-			Vector2 newIndex = new Vector2(randomPicker.Next(10, size- 10),  randomPicker.Next(10, size- 10));
+			Vector2 newIndex = new Vector2(randomPicker.Next(distanceFromEdge, chunkSize- distanceFromEdge),
+			                               randomPicker.Next(distanceFromEdge, chunkSize- distanceFromEdge));
 
 			//First point to be picked, it's good no matter what!
 			if(picked == 1)
@@ -149,8 +197,7 @@ public class ChunkCreator {
 			return new CornerSnowTile (position, Direction.Right);
 
 		return new DirtTile(position);
-		
-		
+
 	}
 	//================================================================================
 
