@@ -11,6 +11,7 @@ public class ChunkCreator {
 	private int lakeSizeY = 5;
 	private int mountainSizeX = 15;
 	private int moutainSizeY = 2;
+	private float alpha = 0.0f;
 	//================================================================================
 	//Constructor for class (Constructs).
 	static ChunkCreator(){
@@ -40,7 +41,7 @@ public class ChunkCreator {
 				tileArray[i,j] = getRandomTile(position);
 				//Set info for new object.
 				tileArray[i,j].setTileIndex(i,j);
-				tileArray[i, j].changeAlpha(0.3f);
+				tileArray[i, j].changeAlpha(alpha);
 				//Set tile as child of Chunk.
 				tileArray[i,j].getGameObject().transform.parent = chunkObject.transform;
 			}
@@ -94,7 +95,7 @@ public class ChunkCreator {
 				UnityEngine.Object.Destroy(tileArray[x + i, y + j].getGameObject());
 				tileArray[x + i, y + j]  = newTile;
 				tileArray[x + i, y + j].getGameObject().transform.parent = chunkObject.transform;
-				tileArray[x + i, y + j].changeAlpha(0.3f);
+				tileArray[x + i, y + j].changeAlpha(alpha);
 			}
 
 		//Make corners of lake dirt!
@@ -122,9 +123,9 @@ public class ChunkCreator {
 
 				//Don't ask why the indices work... they just do!
 				UnityEngine.Object.Destroy(tileArray[x + i, y + j].getGameObject());
-				tileArray[x + i, y + j]  = newTile;
+				tileArray[x + i, y + j] = newTile;
 				tileArray[x + i, y + j].getGameObject().transform.parent = chunkObject.transform;
-				tileArray[x + i, y + j].changeAlpha(0.3f);
+				tileArray[x + i, y + j].changeAlpha(alpha);
 			}
 		
 		//Make corners of lake dirt!

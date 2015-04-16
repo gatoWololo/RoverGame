@@ -32,6 +32,8 @@ public class Sequencer : MonoBehaviour {
 	RoverMovementScript roverMovement;
 	//If it is doing something do not allow the user to span the button.
 	bool isDoingSequence = false;
+	//Size of radius for rover.
+	int radiusSize = 3;
 	//================================================================================
 	// Constructor according to unity.
 	void Start () {
@@ -101,6 +103,8 @@ public class Sequencer : MonoBehaviour {
 			for (int j = 0; j < list.Count; j++) { //Cannot use iterator as we will 
 				                                   //be changing this list while it's running.
 				RoverAction action = actions[j];
+
+				//Take care of movement actions.
 				if (action is MoveAction) {
 					Direction direction = ((MoveAction)action).getDirection ();
 					//Do the command n number of times:
@@ -110,8 +114,65 @@ public class Sequencer : MonoBehaviour {
 					for(int k = 0; k < nTimes; k++){
 						//Check if there is even power to do things.
 						if(BatteryPower.currPower == 0){
-							return false;
 							isDoingSequence = false;
+							return false;
+						}
+						//Move the game object!
+						roverMovement.updateMovement(direction, 1);
+						yield return new WaitForSeconds (delay);
+					}
+				}
+
+				//Take care of scanner actions.
+				if(action is ScannerAction){
+					CircleCollider2D cc = GetComponentInParent<CircleCollider2D>();
+					int nTimes = action.getActionCounter();
+
+					//If multiple scans each scan will increase the range of the scan.
+					//Tell movement script and by how much.
+					for(int k = 1; k <= nTimes; k++){
+						//Check if there is even power to do things.
+						if(BatteryPower.currPower == 0){
+							isDoingSequence = false;
+							return false;
+						}
+						cc.radius = cc.radius + 0.5f * k;
+						//Consume power.
+						//Consume some power :)
+						BatteryPower.usePower();
+						VisualPower.consumePower = true;
+						yield return new WaitForSeconds(delay);
+					}
+					cc.radius = radiusSize;
+				}
+
+				//Take care of drill action.
+				if (action is DrillAction) {
+					//Current direction the rover is facing.
+					Direction direction = roverMovement.getDirection();
+					//Do the command n number of times:
+					int nTimes = action.getActionCounter (); //nyTimes?
+					
+					//Tell movement script and by how much.
+					for(int k = 0; k < nTimes; k++){
+						//Check if there is even power to do things.
+						if(BatteryPower.currPower == 0){
+							isDoingSequence = false;
+							return false;
+						}
+						//Attemp to drill once in front based on the type of tile found there.
+						Tile frontTile = RoverMovementScript.getAdjacentTile(direction);
+						//Use some power to move and some to drill!
+						BatteryPower.usePower();
+						//If tile can be drilled it will and replaced by snow!
+						if(frontTile.getcanDrill() == true){
+							UnityEngine.Object.Destroy(frontTile.getGameObject());
+							Tile tile = new SnowTile(frontTile.getPosition());
+							RoverMovementScript.setAdjacentTile(tile, direction);
+							yield return new WaitForSeconds (delay);
+
+							//TODO: add random item drop for tiles that have been drilled based
+							//on tile type.
 						}
 						//Move the game object!
 						roverMovement.updateMovement(direction, 1);
@@ -192,7 +253,18 @@ public class Sequencer : MonoBehaviour {
 		addActionToList (moveAction);
 		return;
 	}
-
+	//================================================================================
+	public void scannerClick(){
+		ScannerAction scannerAction = new ScannerAction();
+		addActionToList (scannerAction);
+		return;
+	}
+	//================================================================================
+	public void drillClick(){
+		DrillAction drillAction = new DrillAction();
+		addActionToList (drillAction);
+		return;
+	}
 	//================================================================================
 	//Clears the list field of this class ;)
 	public void clearList(){ 

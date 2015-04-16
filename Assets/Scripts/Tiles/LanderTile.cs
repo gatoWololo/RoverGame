@@ -58,6 +58,7 @@ public class LanderTile : Tile {
 				Tile myTile = tileArray[x + i, y + j];
 				UnityEngine.Object.Destroy(myTile.getGameObject());
 				myTile = new LanderTile (position, mainTile, passThrough);
+				tileArray[x + i, y + j] = myTile;
 				//Set tile as child of chunk.
 				myTile.getGameObject().transform.parent = chunk.getGameObject().transform;
 
