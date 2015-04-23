@@ -19,13 +19,19 @@ public class Sequencer : MonoBehaviour {
 	// Amount of time to pass before doing next command.
 	float delay = 1.0f;
 
-	// flag for UI to know to dump current Sequence
+	//flag for UI to tell the current sequnce to stop iterating
 	private bool stopFlag;
-	// tracks how many times the stop button has been pushed.
-	private int stopClicks;
+
+	// flag for UI to know to dump current Sequence
+	private bool clearFlag;
+
+	
 
 	// stops the player from initializing the doSequences and crashing the game if the roverActionlist is empty
 	private bool sequencerEmpty;
+
+	// toggles the loop function
+	private bool loop;
 
 	//The Sequencer holds a reference to the rover movement script as it must
 	//talk to it!
@@ -44,9 +50,10 @@ public class Sequencer : MonoBehaviour {
 		lastAction = new EmptyAction();
 		roverMovement = GetComponent<RoverMovementScript> ();
 		roverScript = GetComponent<RoverScript> ();
+		clearFlag = false;
 		stopFlag = false;
+		loop = false;
 		sequencerEmpty = true;
-		stopClicks = 0;
 		randomPicker = new System.Random ();
 	}
 	//================================================================================
@@ -59,7 +66,7 @@ public class Sequencer : MonoBehaviour {
 	//list so later the rover can perfom the list of actions.
 	public void addActionToList(RoverAction action){
 		sequencerEmpty = false;
-		stopFlag = false;// set the clear flag back to false so the UI knows to display commands again 
+		clearFlag = false;// set the clear flag back to false so the UI knows to display commands again
 		string lastActionStr = lastAction.getActionName ();
 		string currentActionStr = action.getActionName ();
 
@@ -77,33 +84,34 @@ public class Sequencer : MonoBehaviour {
 	}// hale - 04/01/15
 
 	//================================================================================
+	// togggles the loop function between doSequenceLoop() and do Sequence()
+	public void setLoop(){
+		if (!loop) {
+			loop = true;
+		} else {
+			loop = false;
+		}
+	}
+
+
+	//================================================================================
 	//Wrapper for do actions functions which actually does the work. Needs to be done
 	//this way to appropriately have the delays for the rover.
 	public void doSequence(){
-
 		//Make sure our sequence is empty and the user cannot spam the button.
-		if (!sequencerEmpty && !isDoingSequence) {
-			stopClicks = 0;// once we click play reset UI stop button flag
-			StartCoroutine (doActions(list, false));
-		}
+			if (!sequencerEmpty && !isDoingSequence) {
+				stopFlag = false;
+				StartCoroutine (doActions(list));
+			}
 		return;
 	}
-	//================================================================================
-	//Similar to @doSequence() but continues to loop the sequence even after it's done.
-	public void doSequenceLoop(){
 
-		//Make sure our sequence is empty and the user cannot spam the button.
-		if (!sequencerEmpty && !isDoingSequence) {
-			stopClicks = 0;// once we click play reset UI stop button flag
-			StartCoroutine (doActions (list, true));
-		}
-		return;
-	}
 	//================================================================================
 	//Iterates over the list of actions performig the actions.
-	public IEnumerator doActions(List<RoverAction> actions, bool loopForever){
+	public IEnumerator doActions(List<RoverAction> actions){
 		isDoingSequence = true;
 		do {
+
 			//Iterate through the elements of our list.
 			for (int j = 0; j < list.Count; j++) { //Cannot use iterator as we will 
 				                                   //be changing this list while it's running.
@@ -117,6 +125,9 @@ public class Sequencer : MonoBehaviour {
 
 					//Tell movement script and by how much.
 					for(int k = 0; k < nTimes; k++){
+						if(stopFlag){ // if user hits stop button stop moving the rover
+							break;
+						}
 						//Check if there is even power to do things.
 						if(BatteryPower.currPower == 0){
 							isDoingSequence = false;
@@ -125,6 +136,10 @@ public class Sequencer : MonoBehaviour {
 						//Move the game object!
 						roverMovement.updateMovement(direction, 1);
 						yield return new WaitForSeconds (delay);
+					}
+
+					if(stopFlag){ // if user hits stop button stop moving the rover
+						break;
 					}
 				}
 
@@ -201,7 +216,7 @@ public class Sequencer : MonoBehaviour {
 
 				//else??? TODO other actions.
 			}
-		} while(loopForever == true && stopFlag == false);
+		} while(loop == true && stopFlag == false);
 		isDoingSequence = false;
 	}
 	//================================================================================
@@ -244,7 +259,7 @@ public class Sequencer : MonoBehaviour {
 
 	//================================================================================
 	public bool getPlayStatus (){ // Lets the UI know to clear the sequencer
-		return stopFlag;
+		return clearFlag;
 	}// hale - 04/01/15
 
 	//================================================================================          
@@ -287,17 +302,17 @@ public class Sequencer : MonoBehaviour {
 	//================================================================================
 	//Clears the list field of this class ;)
 	public void clearList(){ 
-		// TODO chand the name of this method to reset sequence
-		// This method should stop the rover on one click and clear the list on second click
-
-		stopClicks++; 
-		if (stopClicks == 2) { // if stop button has been pressed twice we want to clear our list.
-			sequencerEmpty = true;
-			stopClicks = 0;
-			stopFlag = true;
-			list.Clear ();
-			lastAction = new EmptyAction ();// added so that the UI will know if the list has been cleared.
-		}
+		sequencerEmpty = true;
+		clearFlag = true;
+		stopFlag = true;
+		list.Clear ();
+		lastAction = new EmptyAction ();// added so that the UI will know if the list has been cleared.
+		return;
+	}// hale - 04/01/15
+	//================================================================================
+	//Clears the list field of this class ;)
+	public void stopRover(){ 
+		stopFlag = true;
 		return;
 	}// hale - 04/01/15
 	//================================================================================

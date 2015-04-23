@@ -80,16 +80,16 @@ public class UISequencer : MonoBehaviour {
 
 		switch (nextAction) { //TODO integrate this into the setSubcript method and then make this a method call
 			case 1:
-				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/UpArrow1", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/UpArrow1", typeof(Sprite)) as Sprite;
 				break;
 			case 2:
-			currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/DownArrow1", typeof(Sprite)) as Sprite;
+			currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/DownArrow1", typeof(Sprite)) as Sprite;
 				break;
 			case 3:
-			currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/LeftArrow1", typeof(Sprite)) as Sprite;
+			currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/LeftArrow1", typeof(Sprite)) as Sprite;
 				break;
 			case 4:
-			currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RightArrow1", typeof(Sprite)) as Sprite;
+			currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/RightArrow1", typeof(Sprite)) as Sprite;
 				break;
 		}
 
@@ -125,36 +125,36 @@ public class UISequencer : MonoBehaviour {
 		case 1:
 			switch (sub) {
 				case 2:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/UpArrow2", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/UpArrow2", typeof(Sprite)) as Sprite;
 					break;
 				case 3:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/UpArrow3", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/UpArrow3", typeof(Sprite)) as Sprite;
 					break;
 				case 4:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/UpArrow4", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/UpArrow4", typeof(Sprite)) as Sprite;
 					break;
 			}
 			break;
 		case 2:
 			switch (sub) {
 				case 2:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/DownArrow2", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/DownArrow2", typeof(Sprite)) as Sprite;
 					break;
 				case 3:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/DownArrow3", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/DownArrow3", typeof(Sprite)) as Sprite;
 					break;
 				case 4:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/DownArrow4", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/DownArrow4", typeof(Sprite)) as Sprite;
 					break;
 			}
 			break;
 		case 3:
 			switch (sub) {
 				case 2:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/LeftArrow2", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/LeftArrow2", typeof(Sprite)) as Sprite;
 					break;
 				case 3:
-					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/LeftArrow3", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/LeftArrow3", typeof(Sprite)) as Sprite;
 					break;
 				case 4:
 					currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/LeftArrow4", typeof(Sprite)) as Sprite;
@@ -164,13 +164,13 @@ public class UISequencer : MonoBehaviour {
 		case 4:
 			switch (sub) {
 			case 2:
-				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RightArrow2", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/RightArrow2", typeof(Sprite)) as Sprite;
 				break;
 			case 3:
-				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RightArrow3", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/RightArrow3", typeof(Sprite)) as Sprite;
 				break;
 			case 4:
-				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RightArrow4", typeof(Sprite)) as Sprite;
+				currentCommand.GetComponent<Image>().overrideSprite = Resources.Load("Textures/RoverUI/Sequencer/RightArrow4", typeof(Sprite)) as Sprite;
 				break;
 			}
 			break;

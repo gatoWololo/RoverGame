@@ -8,8 +8,10 @@ public class RoverScript : MonoBehaviour {
 	private int currentGrid;
 	//The line of sight for the rover to explore squares around him.
 	private int lineOfSight;
+
 	public Inventory inventory;
 	//Do we have the drill yet?
+
 	private bool hasDrill;
 
 	// Use this for initialization
@@ -23,12 +25,13 @@ public class RoverScript : MonoBehaviour {
 		roverPosition.transform.position = new Vector3 (s + 10.5f, s + 10.5f, 0f);
 		//At the begginging we don't have the drill.
 		hasDrill = false;
+
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 
 	public void setHasDrill(bool setting){
