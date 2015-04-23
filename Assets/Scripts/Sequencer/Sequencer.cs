@@ -29,20 +29,25 @@ public class Sequencer : MonoBehaviour {
 
 	//The Sequencer holds a reference to the rover movement script as it must
 	//talk to it!
-	RoverMovementScript roverMovement;
+	private RoverMovementScript roverMovement;
+	private RoverScript roverScript;
 	//If it is doing something do not allow the user to span the button.
-	bool isDoingSequence = false;
+	private bool isDoingSequence = false;
 	//Size of radius for rover.
-	int radiusSize = 3;
+	private int radiusSize = 3;
+	//Random generator for item drops.
+	private System.Random randomPicker;
 	//================================================================================
 	// Constructor according to unity.
 	void Start () {
 		list = new List<RoverAction> ();
 		lastAction = new EmptyAction();
 		roverMovement = GetComponent<RoverMovementScript> ();
+		roverScript = GetComponent<RoverScript> ();
 		stopFlag = false;
 		sequencerEmpty = true;
 		stopClicks = 0;
+		randomPicker = new System.Random ();
 	}
 	//================================================================================
 	// Update is called once per frame
@@ -63,7 +68,7 @@ public class Sequencer : MonoBehaviour {
 				lastAction.increaseActionCounter (1);
 		}
 		// otherwise just add it to the Action list if there is room
-		else if(list.Count<MAXACTIONS){
+		else if(list.Count < MAXACTIONS){
 			list.Add(action);
 			lastAction = action;
 		}
@@ -155,6 +160,9 @@ public class Sequencer : MonoBehaviour {
 					
 					//Tell movement script and by how much.
 					for(int k = 0; k < nTimes; k++){
+						//If user has no drill continue
+						if(roverScript.getHasDrill() == false)
+							continue;
 						//Check if there is even power to do things.
 						if(BatteryPower.currPower == 0){
 							isDoingSequence = false;
@@ -168,14 +176,25 @@ public class Sequencer : MonoBehaviour {
 						if(frontTile.getcanDrill() == true){
 							UnityEngine.Object.Destroy(frontTile.getGameObject());
 							Tile tile = new SnowTile(frontTile.getPosition());
+
+							//Randomly generate random item drop for this tile.
+							int randomNumber  = randomPicker.Next(0,100);
+							if(randomNumber <= 20){
+								//Get position of tile and use it for item!
+								float xCoord = tile.getPosition().x + frontTile.getIndexI();
+								float yCoord = tile.getPosition().y + frontTile.getIndexJ();
+
+								if(frontTile is MountainTile)
+									tile.setItem(new Powder (new Vector2(xCoord, yCoord)));
+								if(frontTile is CopperOreTile)
+									tile.setItem(new Copper (new Vector2(xCoord, yCoord)));
+								//Add more here if any.
+							}
+							//Set tile and wait!
 							RoverMovementScript.setAdjacentTile(tile, direction);
 							yield return new WaitForSeconds (delay);
-
-							//TODO: add random item drop for tiles that have been drilled based
-							//on tile type.
 						}
-						//Move the game object!
-						roverMovement.updateMovement(direction, 1);
+
 						yield return new WaitForSeconds (delay);
 					}
 				}

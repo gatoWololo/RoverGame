@@ -39,6 +39,8 @@ public class RoverMovementScript : MonoBehaviour {
 	public void updateMovement(Direction dir, int times){
 		//Check to see if rover should be able to based on adjacent tile.
 		if (shouldMove(dir) == true) {
+			//The tile we will move to!
+			Tile fronTile = getAdjacentTile(dir);
 			//Calculate the position we should move to.
 			newPos = calculateNewPos (roverTransform.position, dir, times);
 			//Update the cooridinates in the grid!
@@ -46,6 +48,10 @@ public class RoverMovementScript : MonoBehaviour {
 			//Consume some power :)
 			BatteryPower.usePower();
 			VisualPower.consumePower = true;
+
+			//If we are back at the base recharge rover.
+			if(fronTile is LanderTile)
+				BatteryPower.currPower = 100;
 		}
 
 		//Rotate to face proper direction.
@@ -53,8 +59,8 @@ public class RoverMovementScript : MonoBehaviour {
 		this.transform.Rotate (0, 0, newRotate);
 		//Update our direction.
 		RoverMovementScript.previousDir = dir;
-
-
+		//Rover moved see if there is any items to collect in the new tile!
+		collectItem ();
 		return;
 	}
 	//===================================================================================
@@ -93,8 +99,7 @@ public class RoverMovementScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	moveRover();
-	//Rover moved see if there is any items to collect in the new tile!
-	collectItem ();
+
 	return;
 	}
 //===================================================================================
@@ -246,6 +251,8 @@ public void updateRoverCoordinates (Direction dir){
 	/// </summary>
 	static public Tile getCurrentTile(){
 		Chunk currentChunk = World.world [World.currChunkX, World.currChunkY];
+		Debug.Log (currentChunk.getPositionX ());
+		Debug.Log (currentChunk.getPositionY ());
 		return currentChunk.getTileArray()[xTile, yTile];
 	}
 	//===================================================================================
@@ -350,6 +357,7 @@ public void updateRoverCoordinates (Direction dir){
 		default:
 			break; //Should be impossible to happen.
 		}
+
 		Chunk currentChunk = World.world [xChunk, yChunk];
 		Tile[,] tileArray = currentChunk.getTileArray();
 		tileArray [x, y] = tile;

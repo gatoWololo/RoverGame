@@ -44,15 +44,23 @@ public class World : MonoBehaviour {
 		chunkCreator = new ChunkCreator ();
 		//Create whole world!
 		for (int i = 0; i < s; i++)
-			for (int j = 0; j < s; j++)
-				world [i, j] = chunkCreator.createNewChunk (j * chunkSize + offset, i * chunkSize + offset);
+			for (int j = 0; j < s; j++) {
+				//Skip starting chunk for now.
+				if (i == 1 && j == 1)
+					continue;
+				world [i, j] = chunkCreator.createNewChunk(i * chunkSize + offset, j * chunkSize + offset, false);
+			}
 
 		//Create the base on the world[1,1] spot.
+		world [1, 1] = chunkCreator.createNewChunk(chunkSize + offset, chunkSize + offset, true);
 		LanderTile.createLander(world [1,1], chunkSize + offset);
 
 		//Pick place to put in flux Capacitor.
 		fluxPicker = new System.Random ();
 		addFluxCapacitor ();
+		
+		//Place drill randomly on first tile.
+		addDrill(world [1, 1]);
 
 		//Initialize to beggining chunk index.
 		currChunkX = 1;
@@ -106,6 +114,9 @@ public class World : MonoBehaviour {
 	
 	}
 	//================================================================================
+	/// <summary>
+	/// Randomly picks a chunk and a spot and creates the flux capacitor at this spot.
+	/// </summary>
 	private void addFluxCapacitor(){
 		//Pick chunk put it in.
 		int fluxChunkX = fluxPicker.Next(0, maxWorldChunks -1);
@@ -120,7 +131,7 @@ public class World : MonoBehaviour {
 			int fluxY = fluxPicker.Next (0, (int) chunkSize);
 			Tile myTile = tileArray[fluxX, fluxY];
 			//Keep going!
-			if(myTile.hasItem() == false){
+			if(myTile.hasItem() == false && myTile.getCanPassThrough() == true){
 				//Else we have found where to put it!.
 				Vector2 position = new Vector2(fluxX + xPosition, fluxY + yPosition);
 				myTile.setItem(new FluxCapacitor(position));
@@ -128,6 +139,34 @@ public class World : MonoBehaviour {
 			}
 		}
 
+		return;
+	}
+	//================================================================================
+	/// <summary>
+	/// Adds the drill to the given chunk, which should be the same chunk as the rover
+	/// is spawned.
+	/// </summary>
+	/// <param name="chunk">Chunk.</param>
+	private void addDrill(Chunk chunk){
+		float xPosition = chunk.getPositionX();
+		float yPosition = chunk.getPositionY ();
+		Tile[,] tileArray = chunk.getTileArray ();
+		
+		while(true){
+			//We make it 35 as user needs should find drill after not too long.
+			int drillX = fluxPicker.Next (0, (int) 35);
+			int drillY = fluxPicker.Next (0, (int) 35);
+			Tile myTile = tileArray[drillX, drillY];
+
+			//Keep going!
+			if(myTile.hasItem() == false && myTile.getCanPassThrough() == true){
+				//Else we have found where to put it!.
+				Vector2 position = new Vector2(drillX + xPosition, drillY + yPosition);
+				myTile.setItem(new Drill(position));
+				break;
+			}
+		}
+		
 		return;
 	}
 	//================================================================================

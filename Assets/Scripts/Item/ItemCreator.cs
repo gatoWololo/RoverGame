@@ -12,7 +12,7 @@ public class ItemCreator {
 	private readonly Type[] itemTypes = {typeof(Battery), typeof(ScrapMetal)};
 	//Number of random items per chunk.
 
-	private readonly int itemAmount = 50;
+	private int itemAmount = 30;
 
 	//Get random tiles to place items.
 	System.Random randomInt;
@@ -34,12 +34,18 @@ public class ItemCreator {
 	/// Adds the items to the passed chunks based on parameters frequency.
 	/// </summary>
 	/// <param name="chunk">Chunk.</param>
-	public void addItemsToChunk(Chunk chunk){
+	/// <param name="startingChunk">Starting chunk has more items than rest of
+	/// chunks.</param>
+	public void addItemsToChunk(Chunk chunk, bool startingChunk){
 		Tile[,] tileArray = chunk.getTileArray ();
 		int size = (int)World.chunkSize - 1;
 		//Positions for item's transpose.
 		float xPosition = chunk.getPositionX();
 		float yPosition = chunk.getPositionY();
+
+		//Fist chunk has more resources than rest of chunks.
+		if (startingChunk == true)
+			itemAmount *= 2;
 
 		//Add itemAmount number of random iteams to the map!
 		for(int i = 0; i < itemAmount; i++){

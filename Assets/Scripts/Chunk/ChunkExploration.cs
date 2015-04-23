@@ -22,7 +22,7 @@ public class ChunkExploration : MonoBehaviour {
 		//Check if chunk already created!
 		if ((object)(World.world [xIndex, yIndex]) == null) {
 			Vector2 newCoord = getNewCoord (getDirection (x, y), World.chunkCoord);
-			Chunk newChunk = World.chunkCreator.createNewChunk (newCoord.x, newCoord.y);
+			Chunk newChunk = World.chunkCreator.createNewChunk (newCoord.x, newCoord.y, false);
 			World.world [xIndex, yIndex] = newChunk;
 		}
 		return;

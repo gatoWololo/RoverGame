@@ -11,6 +11,7 @@ public class ChunkCreator {
 	private int lakeSizeY = 5;
 	private int mountainSizeX = 15;
 	private int moutainSizeY = 2;
+	private int oreDepositNumber = 4;
 	private float alpha = 0.0f;
 	//================================================================================
 	//Constructor for class (Constructs).
@@ -21,12 +22,14 @@ public class ChunkCreator {
 	//================================================================================
 	/// <summary>
 	/// Create terain of tiles in a 100 x100 fashion, given bottom left corner position
-	/// for this chunk.
+	/// for this chunk. The first chunk has more resource than the rest of the chunks,
+	/// therefore we know which chunk we are on.
 	/// </summary>
 	/// <returns>The new chunk.</returns>
 	/// <param name="xCoord">X coordinate.</param>
 	/// <param name="yCoord">Y coordinate.</param>
-	public Chunk createNewChunk(float xCoord, float yCoord){
+	/// <param name="startingChunk">Whether this is the [1,1] chunk.</param>
+	public Chunk createNewChunk(float xCoord, float yCoord, bool startingChunk){
 		int size = ChunkCreator.chunkSize;
 		Chunk chunk = new Chunk (xCoord, yCoord);
 		ItemCreator itemCreator = new ItemCreator ();
@@ -67,10 +70,21 @@ public class ChunkCreator {
 		y = (int) spots[2].y;
 		makeMountain(x,y, tileArray, xCoord, yCoord, chunkObject, false);
 
-		//This is beggining item for tutorial.
-		tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 18)));
+		//Get random spots for Copper ore!
+		spots = getRandomPositionTiles (size, 2, oreDepositNumber);
+		for (int i = 0; i < oreDepositNumber; i++) {
+			x = (int)spots [i].x;
+			y = (int)spots [i].y;
+			makeOreDeposit(x, y, tileArray, xCoord, yCoord, chunkObject);
+		}
 
-		itemCreator.addItemsToChunk (chunk);
+		//This is beggining item for tutorial.
+		if (startingChunk == true) {
+			tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 18)));
+			itemCreator.addItemsToChunk (chunk, true);
+		} else
+			itemCreator.addItemsToChunk (chunk, false);
+
 		return chunk;
 	}
 	//================================================================================
@@ -106,6 +120,35 @@ public class ChunkCreator {
 	//x and y are the indices for the center of the lake in ther array.
 	//xCoord and y Coord are the actual float location of the sprites on the map.
 	//Flip is used to get some variety in formations.
+	private void makeOreDeposit(int x, int y, Tile[,] tileArray, float xCoord, float yCoord, GameObject chunkObject){
+		//New tile to make for every loop iteration.
+		Tile newTile;
+		//Make ore Deposit in pattern:
+		// *
+		// * * *
+		// * *
+		for (int i = - 1; i <= 1 ; i ++)
+			for (int j = - 1 ; j <= 1 ; j++) {
+				//Tile to skip according to pattern.
+				if((i == -1 && (j == 0 || j == 1)) || (i == 1 && j == 1))
+					continue;
+				Vector2 position = new Vector2(x + xCoord + i, y + yCoord + j);
+				newTile = new CopperOreTile(position);
+			
+				//Don't ask why the indices work... they just do!
+				UnityEngine.Object.Destroy(tileArray[x + i, y + j].getGameObject());
+				tileArray[x + i, y + j] = newTile;
+				tileArray[x + i, y + j].getGameObject().transform.parent = chunkObject.transform;
+				tileArray[x + i, y + j].changeAlpha(alpha);
+			}
+
+		return;
+	}
+	//================================================================================
+	//Make the actual mountain with the given info.
+	//x and y are the indices for the center of the lake in ther array.
+	//xCoord and y Coord are the actual float location of the sprites on the map.
+	//Flip is used to get some variety in formations.
 	private void makeMountain(int x, int y, Tile[,] tileArray, float xCoord, float yCoord, GameObject chunkObject, bool flip){
 		//New tile to make for every loop iteration.
 		Tile newTile;
@@ -118,7 +161,7 @@ public class ChunkCreator {
 		}
 		for (int i = -xRange; i < xRange; i ++)
 			for (int j = -yRange; j < yRange; j++) {
-				Vector2 position = new Vector2(x + xCoord + i,y + yCoord + j);
+				Vector2 position = new Vector2(x + xCoord + i, y + yCoord + j);
 				newTile = new MountainTile(position);
 
 				//Don't ask why the indices work... they just do!
@@ -135,7 +178,7 @@ public class ChunkCreator {
 	//Choses random tiles in each chunk to create lakes, makes sure tiles are far enough
 	//from each other and keeps trying until it finds some.
 	private Vector2[] getRandomPositionTiles(int chunkSize, int distanceFromEdge, int number){
-		Vector2[] indices = new Vector2[3];
+		Vector2[] indices = new Vector2[number];
 		int picked = 0;
 		//Keep trying until we find 3 good spots.
 		while (picked < number) {
