@@ -5,120 +5,144 @@ using UnityEngine.UI;
 
 public class UIEquipment : MonoBehaviour {
 
-	private int MAXINVENTORY = 12;
-
-	private int currentLength; // length of the sequence
-	
-	private List<GameObject> currentInventory; // holds the game objects that represent commands
-	
-	GameObject currentItem;
-
-	private Item selectedInventoryItem;
-	
-	public Transform FirstInventoryPosition; // a blank GameObject used for parenting the sequencer objects within the sequence grid panel
-
-	public Transform FirstEquipmentPosition;
-	
+	private GameObject[] currentEquipment; // holds the game objects that represent commands
+	private UIInventory inventory;
+	private GameObject currentItem;
+	public Transform FirstEquipmentPosition; // a blank GameObject used for parenting the sequencer objects within the sequence grid panel
 	private Vector3 vector;
-	
-	private Sprite sequenceSprite;
-
+	private Object prefab;
+	private ItemRef itemRef;
 	private RoverScript roverScript;
+	private bool hasDrill;
 
-	private bool hasDrillEquipped;
-	
-	private bool HasDrillInInventory;
-
-	
-	Object prefab;
-	
-	
+	// Use this for initialization
 	void Start () {
-		currentInventory = new List<GameObject> ();
-		currentLength = 0;
+		currentEquipment = new GameObject[4];
+		for(int i= 0; i<currentEquipment.Length; i++){
+			currentEquipment[i]= null;
+		}
+		GameObject inventoryObject = GameObject.Find("InventoryGrid");
+		inventory = inventoryObject.GetComponent<UIInventory>();
 		GameObject roverObject = GameObject.Find("Rover");
 		roverScript = roverObject.GetComponent<RoverScript> ();
-		prefab = Resources.Load("Prefabs/InventoryItem", typeof(GameObject));
-		vector = new Vector3 (0f, 0f);
-	}
+		hasDrill = false;
 
+		prefab = Resources.Load("Prefabs/EquipmentItem", typeof(GameObject));
+		vector = new Vector3 (0f, 0f);
+		
+	}
+	
 	// Update is called once per frame
 	void Update () {
 
-		if (currentLength < MAXINVENTORY) {
-			if (roverScript.inventory.getInventoryLength () > currentLength) {
-				Debug.Log ("backend L: " + roverScript.inventory.getInventoryLength () + "\tmy L:" + currentLength);
-				currentLength++;
-				addItemToInventory (roverScript.inventory.getLastItemType ());
+	}
+
+
+	public void toggleEquipment(GameObject gameObject){
+		
+		switch(gameObject.name){
+		case "1"://EquipButton 1
+			Debug.Log ("SI my name is: EquipButton "+ gameObject.name);
+			if(currentEquipment[0]==null){
+				//instanciate object here
+				addItemToEquipment(0);
 			}
-		}
-		// query inventory list if something changed call add item to inventory
-	}
-
-	private void addItemToInventory(int itemType){ 
-		// This method instanciates a new GameObject from prefab, sets the images position within the inventory grid and then sets 
-		// the image to match the last item entered using the itemType parameter.
-		
-		currentItem = Instantiate(prefab, FirstInventoryPosition.position, FirstInventoryPosition.rotation) as GameObject;
-		currentItem.transform.SetParent(FirstInventoryPosition);
-		calculateGridPosition ();
-		currentItem.transform.position = currentItem.transform.position + vector;
-		
-		switch (itemType) { //TODO integrate this into the setSubcript method and then make this a method call
-		case 1:
-			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
-			break;
-		case 2:
-			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/scrapMetal", typeof(Sprite)) as Sprite;
-			break;
-		case 3:
-			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/fluxCapacitor", typeof(Sprite)) as Sprite;
-			break;
-		case 4:
-			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/powder1", typeof(Sprite)) as Sprite;
-			break;
-		case 5:
-			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/copper1", typeof(Sprite)) as Sprite;
-			break;
-		case 6:
-			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/drill1", typeof(Sprite)) as Sprite;
-			HasDrillInInventory = true;
-			break;
-		
-		}
-		
-		currentInventory.Add (currentItem);
-	}
-
-	private void calculateGridPosition(){
-			// modifies the class field 'vector' in order to calculate the offset for the next game object within the sequencer
-			// TODO remove hardcoded numbers and replace with defined constants
-		switch(currentLength%4){
-		case 0:
-			vector.x = 120f;
-			break;
-		case 1:
-			if(currentLength>1){
-				vector.y = vector.y - 40f;
+			else{
+				// destroy object here
+				addItemToInventory(0);
 			}
-			vector.x = 0f;
 			break;
-		case 2:
-			vector.x = 40f;
+		case "2"://EquipButton 2
+			Debug.Log ("SI my name is: EquipButton "+ gameObject.name);
+			if(currentEquipment[1]==null){
+				//instanciate object here
+				addItemToEquipment(1);
+			}
+			else{
+				// destroy object here
+				addItemToInventory(1);
+			}
 			break;
-		case 3:
-			vector.x = 80f;
+		case "3"://EquipButton 3
+			Debug.Log ("SI my name is: EquipButton "+ gameObject.name);
+			if(currentEquipment[2]==null){
+				//instanciate object here
+				addItemToEquipment(2);
+			}
+			else{
+				// destroy object here
+				addItemToInventory(2);
+			}
 			break;
-		}	
-	}
-	
-	private void hasDrill(){
-		roverScript.setHasDrill(hasDrillEquipped);
+		case "4"://Aux
+			Debug.Log ("SI my name is: Aux "+ gameObject.name);
+			if(currentEquipment[3]==null){
+				//instanciate object here
+				addItemToEquipment(3);
+			}
+			else{
+				hasDrill = false;
+				roverScript.setHasDrill(hasDrill);
+				addItemToInventory(3);
+			}
+			break;
+		}
 	}
 
-	public void selectInventoryItem(){
+	public void addItemToEquipment(int n){
+		Vector2 v = inventory.getSelectedInventory(); //type, index
+			
+			if(v.x > -1){ // make sure an item was selected
+		
+				Debug.Log ("Added item of type "+ v.x/*type*/ + "from inventory index "+ v.y/*index*/+ " to Equipment" + n);
+				int type = (int)v.x;
+				
+				if(n !=3 || n==3 && type == 6){ // drill must be equipped in the Aux Position
+					currentItem = Instantiate(prefab, FirstEquipmentPosition.position, FirstEquipmentPosition.rotation) as GameObject;
+					currentItem.transform.SetParent(FirstEquipmentPosition);
+					vector.x = n*40f; // modify the transform of the new object to match the index in the UI
+					currentItem.transform.position = currentItem.transform.position + vector;
+			
+					
+					switch (type) { //TODO integrate this into the setSubcript method and then make this a method call
+					case 1:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
+						break;
+					case 2:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/scrapMetal", typeof(Sprite)) as Sprite;
+						break;
+					case 3:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/fluxCapacitor", typeof(Sprite)) as Sprite;
+						break;
+					case 4:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/powder1", typeof(Sprite)) as Sprite;
+						break;
+					case 5:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/copper1", typeof(Sprite)) as Sprite;
+						break;
+					case 6:
+						hasDrill = true;
+						roverScript.setHasDrill(hasDrill);
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/drill1", typeof(Sprite)) as Sprite;
+						break;
+						
+					}
+					
+					
+					itemRef = currentItem.GetComponent<ItemRef>();
+					itemRef.setUiItemProperties(type,n);
+					Debug.Log ("ADDEQUIP my index is: "+ itemRef.getMyIndex() + " My type is: "+ itemRef.getMyType() );
+					currentEquipment[n] = currentItem;	
+					vector.x = 0f;
+				}
+			}
 		
 	}
 	
-	
+	public void addItemToInventory(int n){
+		Debug.Log ("Removed Item from Equipment" + n);
+		Destroy(currentEquipment[n]);
+		currentEquipment[n] = null;
+	}
+
 }

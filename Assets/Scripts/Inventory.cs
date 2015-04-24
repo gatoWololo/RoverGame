@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 //Rover holds an invetory that tells it which items it has collected!
-public class Inventory {
+public class Inventory : MonoBehaviour  {
 	private List<Item> list;
 
 	private Item lastItem;
@@ -27,8 +28,5 @@ public class Inventory {
 	public int getInventoryLength(){
 		return list.Count;
 	}
-
-
-
 
 }

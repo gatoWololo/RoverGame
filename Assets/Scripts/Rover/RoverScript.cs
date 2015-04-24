@@ -9,14 +9,11 @@ public class RoverScript : MonoBehaviour {
 	//The line of sight for the rover to explore squares around him.
 	private int lineOfSight;
 
-	public Inventory inventory;
-	//Do we have the drill yet?
 
 	private bool hasDrill;
 
 	// Use this for initialization
 	void Start () {
-		inventory = new Inventory ();
 		//Initialize Position of rover!
 		Transform roverPosition = GetComponentInParent<Transform> ();
 		float s = World.chunkSize;

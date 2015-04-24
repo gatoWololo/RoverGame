@@ -20,6 +20,8 @@ public class RoverMovementScript : MonoBehaviour {
 	Vector3 newPos;
 	Transform roverTransform;
 	float speed = 1.0f;
+
+	Inventory inventory;
 	//===================================================================================
 	// Use this for initialization
 	void Start () {
@@ -29,6 +31,7 @@ public class RoverMovementScript : MonoBehaviour {
 		roverTransform = GetComponentInParent<Transform> ();
 		//Initialize to current position.
 		newPos = roverTransform.position;
+		inventory = this.GetComponent<Inventory> ();
 	}
 	//===================================================================================
 	/// <summary>
@@ -167,7 +170,7 @@ public void updateRoverCoordinates (Direction dir){
 		//Add item to our inventory.
 		if(currentTile.hasItem() == true){
 			Item itemFound = currentTile.getItem();
-			GetComponent<RoverScript>().inventory.addElement(itemFound);
+			inventory.addElement(itemFound);
 			itemFound.destroyGameObject();
 		}
 
