@@ -9,7 +9,9 @@ public class UIInventory : MonoBehaviour {
 
 	private int currentLength; // length of the sequence
 	
-	private List<GameObject> currentInventory; // holds the game objects that represent commands
+	private GameObject[] currentInventory; // holds the game objects that represent commands
+
+	//private List<GameObject> oldInventory;
 
 	private GameObject currentItem;
 
@@ -26,15 +28,18 @@ public class UIInventory : MonoBehaviour {
 	private RoverScript roverScript;
 
 	private Inventory inventory;
+	
+	bool dothis;
 
-	private ItemRef itemRef;
+	//private ItemRef itemRef;
 
 	private Object prefab;
 	
 	
 	void Start () {
-		currentInventory = new List<GameObject> ();
+		currentInventory = new GameObject[12];
 		currentLength = 0;
+		dothis = true;
 		GameObject roverObject = GameObject.Find("Rover");
 		roverScript = roverObject.GetComponent<RoverScript> ();
 		inventory = roverObject.GetComponent<Inventory>();
@@ -44,11 +49,11 @@ public class UIInventory : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (currentLength < MAXINVENTORY) {
-			if (inventory.getInventoryLength () > currentLength) {
-				Debug.Log ("backend L: " + inventory.getInventoryLength () + "\tmy L:" + currentLength);
-				currentLength++;
-				addItemToInventory (inventory.getLastItemType ());	
+		if (currentLength < MAXINVENTORY ) {
+			if (inventory.getInventoryLength () > currentLength) { // you never fixed the back end so update is screwing everything up!!!!
+				//Debug.Log ("backend L: " + inventory.getInventoryLength () + "\tmy L:" + currentLength);
+				addItemToInventory (inventory.getLastItemType ());
+				currentLength++;	
 			}
 		}
 	}
@@ -60,7 +65,7 @@ public class UIInventory : MonoBehaviour {
 		
 		currentItem = Instantiate(prefab, FirstInventoryPosition.position, FirstInventoryPosition.rotation) as GameObject;
 		currentItem.transform.SetParent(FirstInventoryPosition);
-		calculateGridPosition (currentLength);
+		calculateGridPosition (currentLength+1);
 		currentItem.transform.position = currentItem.transform.position + vector;
 		
 		switch (itemType) { //TODO integrate this into the setSubcript method and then make this a method call
@@ -85,16 +90,16 @@ public class UIInventory : MonoBehaviour {
 		
 		}
 
-		itemRef = currentItem.GetComponent<ItemRef>();
-		itemRef.setUiItemProperties(itemType,currentInventory.Count);
-		Debug.Log ("SI my index is: "+ itemRef.getMyIndex() + " My type is: "+ itemRef.getMyType() );
-		currentInventory.Add (currentItem);
-		registerButtonAction(itemType);
+		ItemRef itemRef = currentItem.GetComponent<ItemRef>();
+		itemRef.setUiItemProperties(itemType,currentLength);
+		//Debug.Log ("SI my index is: "+ itemRef.getMyIndex() + " My type is: "+ itemRef.getMyType() );
+		currentInventory[currentLength] = currentItem ;
+		registerButtonAction(currentLength);
 	}
 
-	private void registerButtonAction(int type){
-		Debug.Log ("My type is: "+ type);
-		switch(currentInventory.Count-1){
+	private void registerButtonAction(int index){
+		Debug.Log ("My Action index is: "+ index);
+		switch(currentLength){
 		case 0:
 			UnityEngine.Events.UnityAction action0 = () => { selectInventoryItem(0); };
 			currentItem.GetComponent<Button>().onClick.AddListener(action0);
@@ -170,21 +175,54 @@ public class UIInventory : MonoBehaviour {
 			break;
 		}	
 	}
+
+	private void resetInventoryVector(){
+		vector.x = 0f;
+		vector.y = 0f;
+	}
 	
 	public void selectInventoryItem(int index){
-		Debug.Log ("SI my index is: "+ index);
+		Debug.Log ("Button Click - My index is:"+ index);
 		selectedItem = currentInventory[index];
+		if(selectedItem == null){
+			Debug.Log ("Button Click - Selected Item was Null");
+		}
 	}
 
 	public Vector2 getSelectedInventory(){
-		if(selectedItem!= null){
+		if(selectedItem != null){
 			int type = selectedItem.GetComponent<ItemRef>().getMyType();
 			int index = selectedItem.GetComponent<ItemRef>().getMyIndex();
 			selectedItem = null;
 			// destroy item and refactor UI to match rover backend.
-			return new Vector2(type,index);
+			//currentInventory.RemoveAt(index); //remove from front end
+			inventory.removeElement(index); //remove from the backend as well
+			compressInventory();
+			return new Vector2((float)type, (float)index);
 		}
-		else return new Vector2(-1f,-1f);
+		else {
+			Debug.Log ("Selected Item was Null");
+			return new Vector2(-1f,-1f);
+		}
+	}
+
+	// Broken as hell;
+	private void compressInventory(){
+		//destroy all the objects currently in the inventory
+		for(int i = currentInventory.Length-1;i>-1;i--){
+			DestroyImmediate(currentInventory[i]);
+		}
+		resetInventoryVector();
+		// sync the inventory with the backend
+		int inventoryLength = inventory.getInventoryLength();	
+		for(currentLength = 0 ; currentLength<inventoryLength ; currentLength++){
+			int itemId = inventory.getIdAtIndex(currentLength);
+			if(itemId == -1){
+				Debug.LogError("Requested Rover inventory index out of bounds");
+			}else{
+				addItemToInventory(itemId);
+			}
+		}	
 	}
 	
 }

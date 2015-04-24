@@ -135,12 +135,16 @@ public class UIEquipment : MonoBehaviour {
 					currentEquipment[n] = currentItem;	
 					vector.x = 0f;
 				}
+			}	
+			else{
+			Debug.Log ("Fucking Broken" );
 			}
 		
 	}
 	
 	public void addItemToInventory(int n){
 		Debug.Log ("Removed Item from Equipment" + n);
+		// call add to inventory
 		Destroy(currentEquipment[n]);
 		currentEquipment[n] = null;
 	}

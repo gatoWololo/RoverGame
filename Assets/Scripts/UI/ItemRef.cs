@@ -7,17 +7,6 @@ public class ItemRef : MonoBehaviour {
 
 	public int myIndex;
 	
-	// Use this for initialization
-	void Start (int index, int type) {
-		myType = -1;
-		myIndex = -1;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public int getMyType(){
 		return myType;
 	}
@@ -27,10 +16,9 @@ public class ItemRef : MonoBehaviour {
 	}
 
 	public void setUiItemProperties(int type, int index){
+		Debug.Log ("ItemRef being set to: "+ index + " My type is: "+ type );
 		myIndex = index;
 		myType = type;
-	}
-
-	
+	}	
 
 }

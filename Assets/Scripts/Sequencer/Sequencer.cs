@@ -131,7 +131,7 @@ public class Sequencer : MonoBehaviour {
 						//Check if there is even power to do things.
 						if(BatteryPower.currPower == 0){
 							isDoingSequence = false;
-							return false;
+							yield break;
 						}
 						//Move the game object!
 						roverMovement.updateMovement(direction, 1);
@@ -154,7 +154,7 @@ public class Sequencer : MonoBehaviour {
 						//Check if there is even power to do things.
 						if(BatteryPower.currPower == 0){
 							isDoingSequence = false;
-							return false;
+							yield break;
 						}
 						cc.radius = cc.radius + 0.5f * k;
 						//Consume power.
@@ -181,7 +181,7 @@ public class Sequencer : MonoBehaviour {
 						//Check if there is even power to do things.
 						if(BatteryPower.currPower == 0){
 							isDoingSequence = false;
-							return false;
+							yield break;
 						}
 						//Attemp to drill once in front based on the type of tile found there.
 						Tile frontTile = RoverMovementScript.getAdjacentTile(direction);

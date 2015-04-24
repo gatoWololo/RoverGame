@@ -15,14 +15,29 @@ public class Inventory : MonoBehaviour  {
 	}
 
 	public void addElement(Item item){
-		Debug.Log ("Item: " + item.getName () + " has been added to rover's inventory!");
+		//Debug.Log ("Item: " + item.getName () + " has been added to rover's inventory!");
 		list.Add (item);
 		lastItem = item;
 		return;
 	}
 
+	public void removeElement(int index){
+		int x = list.Count;
+		list.RemoveAt(index);
+		int y = list.Count;
+		Debug.Log ("friggin stop");
+	}
+
 	public int getLastItemType(){
 		return lastItem.getItemId ();
+	}
+
+	public int getIdAtIndex(int index){
+		if(index < list.Count){ 
+			Item item = list[index];
+			return item.getItemId();
+		}
+		else return -1;
 	}
 
 	public int getInventoryLength(){
