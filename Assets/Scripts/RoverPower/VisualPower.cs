@@ -10,7 +10,7 @@ public class VisualPower : MonoBehaviour {
 	private float cachedY;
 	private float minXValue;
 	private float maxXValue;
-	private int maxHealth=100;
+	private int maxHealth=300;
 	//Static flag used to tell world to consume power!
 	static public bool consumePower = true;
 	float nextMove = 0;
@@ -26,10 +26,8 @@ public class VisualPower : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (consumePower) {
-			HandlePower ();
-			consumePower = false;
-		}
+		
+		HandlePower ();
 		return;
 	}
 

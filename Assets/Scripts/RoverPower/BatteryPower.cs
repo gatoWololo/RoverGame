@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class BatteryPower : MonoBehaviour {
-	private static int maxPower;
 	private static int minPower;
 	public static int currPower;
 	public static Text power;
@@ -12,9 +11,8 @@ public class BatteryPower : MonoBehaviour {
 	private float nextMove;
 	// Use this for initializtion
 	void Start () {
-		maxPower = 100;
 		minPower = 0;
-		currPower = maxPower;
+		currPower = 100;
 		power = batteryPower.GetComponent<Text> ();
 		power.text = "Battery Power: " + currPower;
 		delay = 1.7f;
@@ -28,6 +26,18 @@ public class BatteryPower : MonoBehaviour {
 			power.text = "Battery Power: " + currPower;
 		}
 		return;
-	}	
+	}
+
+
+	static public void addPower(int charge){
+		currPower = currPower + charge;
+		Debug.Log ("Current Power = "+currPower);
+	}
+
+	static public void removePower(int charge){
+		currPower = currPower - charge;
+		Debug.Log ("Current Power = "+currPower);
+	}
+		
 
 }

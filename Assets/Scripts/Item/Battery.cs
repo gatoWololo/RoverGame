@@ -12,6 +12,7 @@ public class Battery : Item {
 		//Constant for all classes, they have a name and an id for items.
 		itemId = 1;
 		itemName = "battery";
+		itemEnergy = 100;
 
 		myTexture = batteryLocation1;
 		renderer.sprite = Resources.Load (myTexture, typeof(Sprite)) as Sprite;
@@ -19,4 +20,9 @@ public class Battery : Item {
 
 		return;
 	}
+
+	public void setMyEnergy(int charge){
+		this.itemEnergy = charge;
+	}
+	
 }

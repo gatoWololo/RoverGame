@@ -11,8 +11,6 @@ public class UIInventory : MonoBehaviour {
 	
 	private GameObject[] currentInventory; // holds the game objects that represent commands
 
-	//private List<GameObject> oldInventory;
-
 	private GameObject currentItem;
 
 	private GameObject selectedItem;
@@ -28,10 +26,6 @@ public class UIInventory : MonoBehaviour {
 	private RoverScript roverScript;
 
 	private Inventory inventory;
-	
-	bool dothis;
-
-	//private ItemRef itemRef;
 
 	private Object prefab;
 	
@@ -39,10 +33,10 @@ public class UIInventory : MonoBehaviour {
 	void Start () {
 		currentInventory = new GameObject[12];
 		currentLength = 0;
-		dothis = true;
 		GameObject roverObject = GameObject.Find("Rover");
 		roverScript = roverObject.GetComponent<RoverScript> ();
 		inventory = roverObject.GetComponent<Inventory>();
+		inventory.setMaxItems(MAXINVENTORY);
 		prefab = Resources.Load("Prefabs/InventoryItem", typeof(GameObject));
 		vector = new Vector3 (0f, 0f);	
 	}
@@ -52,17 +46,17 @@ public class UIInventory : MonoBehaviour {
 		if (currentLength < MAXINVENTORY ) {
 			if (inventory.getInventoryLength () > currentLength) { // you never fixed the back end so update is screwing everything up!!!!
 				//Debug.Log ("backend L: " + inventory.getInventoryLength () + "\tmy L:" + currentLength);
-				addItemToInventory (inventory.getLastItemType ());
+				addItemToInventory (inventory.getLastItem());
 				currentLength++;	
 			}
 		}
 	}
 
 
-	private void addItemToInventory(int itemType){ 
+	private void addItemToInventory(Item item){ 
 		// This method instanciates a new GameObject from prefab, sets the images position within the inventory grid and then sets 
 		// the image to match the last item entered using the itemType parameter.
-		
+		int itemType = item.getItemId();
 		currentItem = Instantiate(prefab, FirstInventoryPosition.position, FirstInventoryPosition.rotation) as GameObject;
 		currentItem.transform.SetParent(FirstInventoryPosition);
 		calculateGridPosition (currentLength+1);
@@ -89,9 +83,14 @@ public class UIInventory : MonoBehaviour {
 			break;
 		
 		}
-
+		
 		ItemRef itemRef = currentItem.GetComponent<ItemRef>();
 		itemRef.setUiItemProperties(itemType,currentLength);
+		
+		if(item.getItemEnergy()>-1){ //check to see if this itemref is a used object from the equipment menu
+			itemRef.setMyEnergy(item.getItemEnergy()); // set the energy in our new item ref to match the old object we are representing
+		}
+
 		//Debug.Log ("SI my index is: "+ itemRef.getMyIndex() + " My type is: "+ itemRef.getMyType() );
 		currentInventory[currentLength] = currentItem ;
 		registerButtonAction(currentLength);
@@ -180,49 +179,90 @@ public class UIInventory : MonoBehaviour {
 		vector.x = 0f;
 		vector.y = 0f;
 	}
-	
-	public void selectInventoryItem(int index){
-		Debug.Log ("Button Click - My index is:"+ index);
-		selectedItem = currentInventory[index];
-		if(selectedItem == null){
-			Debug.Log ("Button Click - Selected Item was Null");
-		}
-	}
 
-	public Vector2 getSelectedInventory(){
-		if(selectedItem != null){
-			int type = selectedItem.GetComponent<ItemRef>().getMyType();
-			int index = selectedItem.GetComponent<ItemRef>().getMyIndex();
-			selectedItem = null;
-			// destroy item and refactor UI to match rover backend.
-			//currentInventory.RemoveAt(index); //remove from front end
-			inventory.removeElement(index); //remove from the backend as well
-			compressInventory();
-			return new Vector2((float)type, (float)index);
-		}
-		else {
-			Debug.Log ("Selected Item was Null");
-			return new Vector2(-1f,-1f);
-		}
-	}
-
-	// Broken as hell;
 	private void compressInventory(){
-		//destroy all the objects currently in the inventory
+		//destroy all the inventory objects currently in the  UI layer inventory
 		for(int i = currentInventory.Length-1;i>-1;i--){
 			DestroyImmediate(currentInventory[i]);
 		}
 		resetInventoryVector();
-		// sync the inventory with the backend
-		int inventoryLength = inventory.getInventoryLength();	
+	
+		int inventoryLength = inventory.getInventoryLength();
+		
+		// traverse the back end and call add inventory to create a new representation 
+		// in the UI layer	
 		for(currentLength = 0 ; currentLength<inventoryLength ; currentLength++){
-			int itemId = inventory.getIdAtIndex(currentLength);
-			if(itemId == -1){
-				Debug.LogError("Requested Rover inventory index out of bounds");
-			}else{
-				addItemToInventory(itemId);
-			}
+			Item item = inventory.getItemAtIndex(currentLength);
+			addItemToInventory(item);	
 		}	
+	}
+	
+	public void selectInventoryItem(int index){
+		//Debug.Log ("Button Click - My index is:"+ index);
+		selectedItem = currentInventory[index];
+		if(selectedItem == null){
+			Debug.LogError ("ERROR: Selected Item out of bounds");
+		}
+	}
+
+
+	// this method exports an item ref object to the equipment menu
+	// and then destroys the inventory representation of the object
+	public Vector2 getSelectedInventory(){
+		if(selectedItem != null){
+			ItemRef itemRef = selectedItem.GetComponent<ItemRef>();
+			Vector2 itemValues = new Vector2((float)itemRef.getMyType(),(float)itemRef.getMyEnergy());
+			int index = itemRef.getMyIndex();
+			selectedItem = null;
+			// destroy item and refactor UI to match rover backend.
+			inventory.removeElement(index); //remove from the backend as well
+			compressInventory();
+			return itemValues;
+		}
+		else {
+			Debug.LogError ("ERROR: Selected Item was Null");
+			
+			return new Vector3(-1f,-1f,-1f);
+		}
+	}
+
+	// this method recieves an itemref represenation of an object from the 
+	// Equipment menu and then instaciates an actual item and adds it to the
+	// rover inventory
+	// the update method handles rebuilding a UI represenation that matches
+	// the inventory in the rover.
+	public void returnToInventory(Vector2 itemValues){
+		int itemId = (int)itemValues.x;
+		Debug.Log ("ReturnToInventory ItemId: "+ itemId);
+		Item item = null;
+		Vector2 vec = new Vector2(0f,0f);
+		switch(itemId){
+			case 1:
+				item = new Battery(vec);
+				((Battery)item).setMyEnergy((int)itemValues.y);
+				break;
+			case 2:
+				item = new ScrapMetal(vec);
+				break;
+			case 3:
+				item = new FluxCapacitor(vec);
+				break;
+			case 4:
+				item = new Powder(vec);
+				break;
+			case 5:
+				item = new Copper(vec);
+				break;
+			case 6:
+				item = new Drill(vec);
+				break;
+		}
+		if(item == null){Debug.LogError("ERROR: Invalid Item type passed from Equipment Module");}
+		inventory.addElement(item);
+	}
+
+	public bool full(){
+		return currentLength == MAXINVENTORY;
 	}
 	
 }

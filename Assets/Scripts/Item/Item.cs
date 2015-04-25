@@ -6,6 +6,7 @@ using System.Collections;
 public class Item {
 	protected int itemId;
 	protected string itemName;
+	protected int itemEnergy;
 
 	//Actual game object that Unity uses, this class wraps it all.
 	protected GameObject gameObject;
@@ -23,6 +24,8 @@ public class Item {
 		//Set item information.
 		this.itemId = -1;
 		this.itemName = "Item";
+		this.itemEnergy = -1;
+
 
 		//Set position of item in the world.
 		Vector3 finalPosition = new Vector3 (position.x, position.y, 0);
@@ -61,6 +64,11 @@ public class Item {
 	public int getItemId(){
 		return itemId;
 	}
+
+	public int getItemEnergy(){
+		return itemEnergy;
+	}
+
 	//================================================================================
 	public GameObject getGameObject(){
 		return gameObject;

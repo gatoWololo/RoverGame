@@ -8,40 +8,55 @@ public class Inventory : MonoBehaviour  {
 
 	private Item lastItem;
 
+	private int maxItems;
+	private int currentItems;
+
 	//Constructor for our inventory.
 	public Inventory(){
 		list = new List<Item> ();
 		lastItem = null;
+		maxItems = 0;
+		currentItems = 0;
 	}
 
 	public void addElement(Item item){
 		//Debug.Log ("Item: " + item.getName () + " has been added to rover's inventory!");
-		list.Add (item);
-		lastItem = item;
+		if(maxItems > 0 && currentItems < maxItems){
+			list.Add (item);
+			lastItem = item;
+			currentItems++;
+		}
 		return;
 	}
 
 	public void removeElement(int index){
-		int x = list.Count;
 		list.RemoveAt(index);
-		int y = list.Count;
-		Debug.Log ("friggin stop");
+		currentItems--;
 	}
 
-	public int getLastItemType(){
-		return lastItem.getItemId ();
+	public Item getLastItem(){
+		return lastItem;
 	}
 
-	public int getIdAtIndex(int index){
+	public Item getItemAtIndex(int index){
 		if(index < list.Count){ 
 			Item item = list[index];
-			return item.getItemId();
+			return item;
 		}
-		else return -1;
+		else return null;
 	}
 
 	public int getInventoryLength(){
 		return list.Count;
+	}
+	
+	public void setMaxItems(int n){
+		maxItems = n;
+	}
+
+	public bool full(){
+		if(currentItems > maxItems){ Debug.LogError("ERROR: Inventory bounds surpassed");}
+		return (currentItems >= maxItems );
 	}
 
 }

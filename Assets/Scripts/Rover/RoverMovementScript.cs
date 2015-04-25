@@ -32,6 +32,7 @@ public class RoverMovementScript : MonoBehaviour {
 		//Initialize to current position.
 		newPos = roverTransform.position;
 		inventory = this.GetComponent<Inventory> ();
+		
 	}
 	//===================================================================================
 	/// <summary>
@@ -168,10 +169,12 @@ public void updateRoverCoordinates (Direction dir){
 		//We moved so attempt to collect it whatever is in their new block.
 		Tile currentTile = getCurrentTile();
 		//Add item to our inventory.
-		if(currentTile.hasItem() == true){
-			Item itemFound = currentTile.getItem();
-			inventory.addElement(itemFound);
-			itemFound.destroyGameObject();
+		if(!inventory.full()){ // lets not collect items if we dont have any room for them.
+			if(currentTile.hasItem() == true){
+				Item itemFound = currentTile.getItem();
+				inventory.addElement(itemFound);
+				itemFound.destroyGameObject();
+			}
 		}
 
 		return;
