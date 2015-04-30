@@ -16,6 +16,7 @@ public class Copper : Item {
 		myTexture = powderLocation1;
 		renderer.sprite = Resources.Load (myTexture, typeof(Sprite)) as Sprite;
 		gameObject.name = itemName;
+		isWinItem = true;
 		
 		return;
 	}

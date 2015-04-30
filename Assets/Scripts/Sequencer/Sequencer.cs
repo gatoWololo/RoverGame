@@ -92,8 +92,6 @@ public class Sequencer : MonoBehaviour {
 			loop = false;
 		}
 	}
-
-
 	//================================================================================
 	//Wrapper for do actions functions which actually does the work. Needs to be done
 	//this way to appropriately have the delays for the rover.

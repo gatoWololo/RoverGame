@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
+
 
 //Probably should be updated so if a collision is caused then we stop automatically
 //instead of using friction to slow down...
@@ -31,8 +33,8 @@ public class RoverMovementScript : MonoBehaviour {
 		roverTransform = GetComponentInParent<Transform> ();
 		//Initialize to current position.
 		newPos = roverTransform.position;
+
 		inventory = this.GetComponent<Inventory> ();
-		
 	}
 	//===================================================================================
 	/// <summary>
@@ -53,9 +55,13 @@ public class RoverMovementScript : MonoBehaviour {
 			BatteryPower.usePower();
 			VisualPower.consumePower = true;
 
-			//If we are back at the base recharge rover.
-			if(fronTile is LanderTile)
+			//If we are back at the base recharge rover and move items from inventory over
+			//To base for collection.
+			if(fronTile is LanderTile){
 				BatteryPower.currPower = 100;
+
+				GetComponentInParent<ItemsToCollectScript>().subtractRoverItems();
+			}
 		}
 
 		//Rotate to face proper direction.

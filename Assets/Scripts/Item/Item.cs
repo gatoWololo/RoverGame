@@ -7,11 +7,13 @@ public class Item {
 	protected int itemId;
 	protected string itemName;
 	protected int itemEnergy;
+	protected bool isWinItem;
 
 	//Actual game object that Unity uses, this class wraps it all.
 	protected GameObject gameObject;
 	protected SpriteRenderer renderer;
 	protected BoxCollider2D collider;
+
 	//================================================================================
 	//Le constructor!
 	public Item(Vector2 position){
@@ -25,7 +27,7 @@ public class Item {
 		this.itemId = -1;
 		this.itemName = "Item";
 		this.itemEnergy = -1;
-
+		isWinItem = false;
 
 		//Set position of item in the world.
 		Vector3 finalPosition = new Vector3 (position.x, position.y, 0);
@@ -73,5 +75,8 @@ public class Item {
 	public GameObject getGameObject(){
 		return gameObject;
 
+	}
+	public bool getIsWinItem(){
+		return isWinItem;
 	}
 }

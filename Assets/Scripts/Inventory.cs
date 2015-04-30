@@ -11,6 +11,10 @@ public class Inventory : MonoBehaviour  {
 	private int maxItems;
 	private int currentItems;
 
+	public List<Item> getList(){
+		return list;
+	}
+
 	//Constructor for our inventory.
 	public Inventory(){
 		list = new List<Item> ();
@@ -57,6 +61,10 @@ public class Inventory : MonoBehaviour  {
 	public bool full(){
 		if(currentItems > maxItems){ Debug.LogError("ERROR: Inventory bounds surpassed");}
 		return (currentItems >= maxItems );
+	}
+
+	public int getLength(){
+		return list.Count;
 	}
 
 }

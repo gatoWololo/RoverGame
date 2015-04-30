@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class UIInventory : MonoBehaviour {
-
+	public static UIInventory staticThis;
 	private int MAXINVENTORY = 12;
 
 	private int currentLength; // length of the sequence
@@ -39,6 +39,7 @@ public class UIInventory : MonoBehaviour {
 		inventory.setMaxItems(MAXINVENTORY);
 		prefab = Resources.Load("Prefabs/InventoryItem", typeof(GameObject));
 		vector = new Vector3 (0f, 0f);	
+		staticThis = this;
 	}
 
 	// Update is called once per frame
@@ -180,7 +181,7 @@ public class UIInventory : MonoBehaviour {
 		vector.y = 0f;
 	}
 
-	private void compressInventory(){
+	public void compressInventory(){
 		//destroy all the inventory objects currently in the  UI layer inventory
 		for(int i = currentInventory.Length-1;i>-1;i--){
 			DestroyImmediate(currentInventory[i]);
@@ -220,7 +221,7 @@ public class UIInventory : MonoBehaviour {
 			return itemValues;
 		}
 		else {
-			Debug.LogError ("ERROR: Selected Item was Null");
+			//Debug.LogError ("ERROR: Selected Item was Null");
 			
 			return new Vector3(-1f,-1f,-1f);
 		}

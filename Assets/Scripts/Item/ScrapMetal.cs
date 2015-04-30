@@ -16,7 +16,8 @@ public class ScrapMetal : Item {
 		myTexture = scrapMetalLocation1;
 		renderer.sprite = Resources.Load (myTexture, typeof(Sprite)) as Sprite;
 		gameObject.name = itemName;
-		
+		isWinItem = true;
+
 		return;
 	}
 }

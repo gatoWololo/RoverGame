@@ -16,6 +16,7 @@ public class FluxCapacitor : Item {
 		myTexture = fluxCapacitorLocation;
 		renderer.sprite = Resources.Load (myTexture, typeof(Sprite)) as Sprite;
 		gameObject.name = itemName;
+		isWinItem = true;
 		
 		return;
 	}
