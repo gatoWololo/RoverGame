@@ -17,7 +17,7 @@ public class LanderTile : Tile {
 	/// <param name="position">Position of the tile on the map.</param>
 	/// <param name="centerTile">Whether or not this is the tile in the center,
 	/// this is needed as only the center tile has the sprite renderer.</param>
-	private LanderTile(Vector2 position, bool centerTile, bool passThrough) : base(position){
+	public LanderTile(Vector2 position, bool centerTile, bool passThrough) : base(position){
 		gameObject.name = "LanderTile";
 
 		if (centerTile == true) {

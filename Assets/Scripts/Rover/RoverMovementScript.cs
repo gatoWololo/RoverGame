@@ -315,6 +315,10 @@ public void updateRoverCoordinates (Direction dir){
 		default:
 			break; //Should be impossible to happen.
 		}
+		// if break, comment out---------------------------------------------------------
+		if(xChunk == -1 || xChunk == 3 || yChunk == -1 || yChunk ==3)
+			return new LanderTile(new Vector2(-100.0f, -100.0f), false, false);
+		//-------------------------------------------------------------------------------
 		Chunk currentChunk = World.world [xChunk, yChunk];
 		Tile[,] tileArray = currentChunk.getTileArray();
 		return tileArray [x, y];
