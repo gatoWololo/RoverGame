@@ -8,14 +8,14 @@ public class UIEquipment : MonoBehaviour {
 	private GameObject[] currentEquipment; // holds the game objects that represent commands
 	private int[] EquipmentType;
 	private UIInventory inventory;
-	private GameObject currentItem;
+	public GameObject currentItem;
 	public Transform FirstEquipmentPosition; // a blank GameObject used for parenting the sequencer objects within the sequence grid panel
 	private Vector3 vector;
 	private Object prefab;
 	private ItemRef itemRef;
 	private RoverScript roverScript;
 	private bool hasDrill;
-	private int batteriesEquipped;
+	public int batteriesEquipped;
 	private int type;
 
 	// Use this for initialization
@@ -53,7 +53,7 @@ public class UIEquipment : MonoBehaviour {
 	}
 
 
-	private void initEquipment(){
+	public void initEquipment(){
 		currentItem = Instantiate(prefab, FirstEquipmentPosition.position, FirstEquipmentPosition.rotation) as GameObject;
 		currentItem.transform.SetParent(FirstEquipmentPosition);
 		currentItem.transform.position = currentItem.transform.position;
@@ -196,7 +196,7 @@ public class UIEquipment : MonoBehaviour {
 	}
 
 	
-	private void addItemToInventory(int n){
+	public void addItemToInventory(int n){
 		// n is the index of the equipment array
 		//Debug.Log ("Removed Item from Equipment" + n);
 		int charge = 0;
@@ -221,7 +221,7 @@ public class UIEquipment : MonoBehaviour {
 		}
 	}
 
-	private void expelBattery(int n){
+	public void expelBattery(int n){
 		batteriesEquipped--;
 		EquipmentType[n] = 0;
 		Destroy(currentEquipment[n]);

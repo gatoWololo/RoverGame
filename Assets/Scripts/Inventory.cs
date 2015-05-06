@@ -19,7 +19,7 @@ public class Inventory : MonoBehaviour  {
 	public Inventory(){
 		list = new List<Item> ();
 		lastItem = null;
-		maxItems = 0;
+		maxItems = 5;
 		currentItems = 0;
 	}
 

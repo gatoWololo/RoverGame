@@ -9,7 +9,7 @@ public class UISequencer : MonoBehaviour {
 
 	private int nextAction; // integer value representing the action we are going to add
 	
-	private int currentLength; // length of the sequence
+	public int currentLength; // length of the sequence
 
 	private int lastStepValue;
 
@@ -21,7 +21,7 @@ public class UISequencer : MonoBehaviour {
 
 	public Transform FirstSequencerPosition; // a blank GameObject used for parenting the sequencer objects within the sequence grid panel
 
-	private Vector3 vector;
+	public Vector3 vector;
 
 	private Sprite sequenceSprite;
 
@@ -69,7 +69,7 @@ public class UISequencer : MonoBehaviour {
 
 
 
-	private void addActionToUISequence(int nextAction){ 
+	public void addActionToUISequence(int nextAction){ 
 	// This method instanciates a new GameObject from prefab, sets the images position within the sequencer grid and then sets 
 	// the image to match the last command entered using the nextAction parameter.
 
@@ -96,7 +96,7 @@ public class UISequencer : MonoBehaviour {
 		currentRoutine.Add (currentCommand);
 	}
 
-	private void calculateGridPosition(){
+	public void calculateGridPosition(){
 		// modifies the class field 'vector' in order to calculate the offset for the next game object within the sequencer
 		// TODO remove hardcoded numbers and replace with defined constants
 		switch(currentLength%4){

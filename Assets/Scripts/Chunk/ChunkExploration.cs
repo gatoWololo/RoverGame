@@ -32,7 +32,7 @@ public class ChunkExploration : MonoBehaviour {
 	void Update () {	}
 
 	//Returns the new location in the world where the tile should be placed.
-	private Vector2 getWorldIndex(int x, int y, Direction dir){
+	public Vector2 getWorldIndex(int x, int y, Direction dir){
 		Vector2 vector = new Vector2 (0, 0);
 
 		switch (dir) {
@@ -55,7 +55,7 @@ public class ChunkExploration : MonoBehaviour {
 
 	//Given the location of the rover it will return a direction showing which
 	//chunk it should autogenerate the next chunk in (Assumes 50x50 chunks)
-	private Direction getDirection(int x, int y){
+	public Direction getDirection(int x, int y){
 		Direction dir = RoverMovementScript.previousDir;
 		if (dir == Direction.Down)
 			return Direction.Down;
@@ -75,7 +75,7 @@ public class ChunkExploration : MonoBehaviour {
 	/// <returns>The new coordinate.</returns>
 	/// <param name="dir">Dir.</param>
 	/// <param name="currCoord">Curr coordinate.</param>
-	private Vector2 getNewCoord(Direction dir, Vector2 currCoord){
+	public Vector2 getNewCoord(Direction dir, Vector2 currCoord){
 		float x = currCoord.x;
 		float y = currCoord.y;
 

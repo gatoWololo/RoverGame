@@ -177,7 +177,7 @@ public class ChunkCreator {
 	//================================================================================
 	//Choses random tiles in each chunk to create lakes, makes sure tiles are far enough
 	//from each other and keeps trying until it finds some.
-	private Vector2[] getRandomPositionTiles(int chunkSize, int distanceFromEdge, int number){
+	public Vector2[] getRandomPositionTiles(int chunkSize, int distanceFromEdge, int number){
 		Vector2[] indices = new Vector2[number];
 		int picked = 0;
 		//Keep trying until we find 3 good spots.
@@ -203,7 +203,7 @@ public class ChunkCreator {
 	}
 	//================================================================================
 	//Gets a tile from the possible tile types we have.
-	private Tile getRandomTile(Vector2 position){
+	public Tile getRandomTile(Vector2 position){
 		int tileIndex = randomPicker.Next(0, tileTypes.Length);
 		Type tileType = tileTypes [tileIndex];
 		//Create new tile from given Type object and pass it the one paramater objects
@@ -214,23 +214,23 @@ public class ChunkCreator {
 	}
 	//================================================================================
 	//
-	private float pow2(float x){
+	public float pow2(float x){
 		return x * x;
 	}
 	//================================================================================
-	private bool isSame(int i, int j, int number){
+	public bool isSame(int i, int j, int number){
 		return (i == number && j == number);
 	}
 	//================================================================================
 	//Given two vectors compares their distance to make sure they are far enough.
-	private bool farEnough(Vector2 x, Vector2 y){
+	public bool farEnough(Vector2 x, Vector2 y){
 		int prevDistance = (int)Math.Sqrt (pow2 (x.x - y.x) + pow2 (x.y - y.y));
 		bool results = prevDistance > 6.0f;
 
 		return results;
 	}
 	//================================================================================
-	private Tile getProperEdgeTile(int i, int j,Vector2 position){
+	public Tile getProperEdgeTile(int i, int j,Vector2 position){
 		if (j + 1 == lakeSizeX)
 			return new CornerSnowTile (position, Direction.Down);
 		if (j == - lakeSizeX)
