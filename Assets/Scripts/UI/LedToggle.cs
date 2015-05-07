@@ -11,10 +11,10 @@ public class LedToggle : MonoBehaviour {
 	public bool loopLed;
 	private bool loopChanged;
 
-	private GameObject clearLedObject;
-	private Image clearImage;
-	private bool clearChanged;
-	private float triggertime;
+	public GameObject clearLedObject;
+	public Image clearImage;
+	public bool clearChanged;
+	public float triggertime;
 	private float flashDuration;
 
 
@@ -67,15 +67,13 @@ public class LedToggle : MonoBehaviour {
 		}
 	}
 	 
-	private void clearOn(){
+	public void clearOn(){
 		clearChanged = false;
 		triggertime = Time.time;
-		Debug.Log ("TriggerTime: " + triggertime);
-
 		clearImage.enabled = true;
 	}
 
-	private void clearOff(){
+	public void clearOff(){
 		clearImage.enabled = false;
 		triggertime = 0f;
 	}

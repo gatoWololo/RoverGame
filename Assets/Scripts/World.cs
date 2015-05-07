@@ -33,7 +33,8 @@ public class World : MonoBehaviour {
 	private float sizeOfWorld;
 	//Set the end of the world 3 tiles short in all directions!
 	private float colliderSize = 3.0f;
-	private static System.Random fluxPicker;
+	public static System.Random fluxPicker;
+	public bool fluxCapacitorFlag = false;
 	//================================================================================
 	// Use this for initialization
 	void Start () {
@@ -105,7 +106,7 @@ public class World : MonoBehaviour {
 	/// <returns>The edge.</returns>
 	/// <param name="start">The start coordinate.</param>
 	/// <param name="end">The end coordinate.</param>
-	private Vector2[] getEdgePoints(Vector2 start, Vector2 end){
+	public Vector2[] getEdgePoints(Vector2 start, Vector2 end){
 		return new Vector2[] {start, end};
 	}
 	//================================================================================
@@ -117,7 +118,7 @@ public class World : MonoBehaviour {
 	/// <summary>
 	/// Randomly picks a chunk and a spot and creates the flux capacitor at this spot.
 	/// </summary>
-	private void addFluxCapacitor(){
+	public void addFluxCapacitor(){
 		//Pick chunk put it in.
 		int fluxChunkX = fluxPicker.Next(0, maxWorldChunks -1);
 		int fluxChunkY = fluxPicker.Next(0, maxWorldChunks -1);
@@ -138,6 +139,7 @@ public class World : MonoBehaviour {
 				break;
 			}
 		}
+		fluxCapacitorFlag = true;
 
 		return;
 	}
@@ -147,7 +149,7 @@ public class World : MonoBehaviour {
 	/// is spawned.
 	/// </summary>
 	/// <param name="chunk">Chunk.</param>
-	private void addDrill(Chunk chunk){
+	public void addDrill(Chunk chunk){
 		float xPosition = chunk.getPositionX();
 		float yPosition = chunk.getPositionY ();
 		Tile[,] tileArray = chunk.getTileArray ();

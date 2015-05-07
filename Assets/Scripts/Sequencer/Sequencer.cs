@@ -12,26 +12,24 @@ public class Sequencer : MonoBehaviour {
 	private int MAXACTIONS = 16; // maximum number of actions in our <RoverAction>List
 
 	//This list will hold the event that need to be performed.
-	private List<RoverAction> list;
+	public List<RoverAction> list;
 	//We keep a reference to the most recently clicked action for ease of access
 	//and efficiency.
-	private RoverAction lastAction;
+	public RoverAction lastAction;
 	// Amount of time to pass before doing next command.
 	float delay = 1.0f;
 
 	//flag for UI to tell the current sequnce to stop iterating
-	private bool stopFlag;
+	public bool stopFlag;
 
 	// flag for UI to know to dump current Sequence
 	private bool clearFlag;
-
 	
-
 	// stops the player from initializing the doSequences and crashing the game if the roverActionlist is empty
 	private bool sequencerEmpty;
 
 	// toggles the loop function
-	private bool loop;
+	public bool loop;
 
 	//The Sequencer holds a reference to the rover movement script as it must
 	//talk to it!
@@ -50,6 +48,18 @@ public class Sequencer : MonoBehaviour {
 		lastAction = new EmptyAction();
 		roverMovement = GetComponent<RoverMovementScript> ();
 		roverScript = GetComponent<RoverScript> ();
+		clearFlag = false;
+		stopFlag = false;
+		loop = false;
+		sequencerEmpty = true;
+		randomPicker = new System.Random ();
+	}
+	// Constructor according to unity.
+	public void publicStart () {
+		list = new List<RoverAction> ();
+		lastAction = new EmptyAction();
+		//roverMovement = GetComponent<RoverMovementScript> ();
+		//roverScript = GetComponent<RoverScript> ();
 		clearFlag = false;
 		stopFlag = false;
 		loop = false;

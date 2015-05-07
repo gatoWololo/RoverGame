@@ -7,7 +7,7 @@ public class UIInventory : MonoBehaviour {
 	public static UIInventory staticThis;
 	private int MAXINVENTORY = 12;
 
-	private int currentLength; // length of the sequence
+	public int currentLength; // length of the sequence
 	
 	private GameObject[] currentInventory; // holds the game objects that represent commands
 
@@ -19,7 +19,7 @@ public class UIInventory : MonoBehaviour {
 	
 	public Transform FirstInventoryPosition; // a blank GameObject used for parenting the sequencer objects within the sequence grid panel
 	
-	private Vector3 vector;
+	public Vector3 vector;
 	
 	private Sprite sequenceSprite;
 
@@ -54,7 +54,7 @@ public class UIInventory : MonoBehaviour {
 	}
 
 
-	private void addItemToInventory(Item item){ 
+	public void addItemToInventory(Item item){ 
 		// This method instanciates a new GameObject from prefab, sets the images position within the inventory grid and then sets 
 		// the image to match the last item entered using the itemType parameter.
 		int itemType = item.getItemId();
@@ -154,7 +154,7 @@ public class UIInventory : MonoBehaviour {
 	}
 
 
-	private void calculateGridPosition(int x){
+	public void calculateGridPosition(int x){
 			// modifies the class field 'vector' in order to calculate the offset for the next game object within the sequencer
 			// TODO remove hardcoded numbers and replace with defined constants
 		switch(x%4){
@@ -176,7 +176,7 @@ public class UIInventory : MonoBehaviour {
 		}	
 	}
 
-	private void resetInventoryVector(){
+	public void resetInventoryVector(){
 		vector.x = 0f;
 		vector.y = 0f;
 	}
