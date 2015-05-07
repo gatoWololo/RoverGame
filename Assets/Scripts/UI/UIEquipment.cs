@@ -60,7 +60,7 @@ public class UIEquipment : MonoBehaviour {
 		currentItem = Instantiate(prefab, FirstEquipmentPosition.position, FirstEquipmentPosition.rotation) as GameObject;
 		currentItem.transform.SetParent(FirstEquipmentPosition);
 		currentItem.transform.position = currentItem.transform.position;
-		currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
+		currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/batteryInv", typeof(Sprite)) as Sprite;
 		batteriesEquipped ++;
 		itemRef = currentItem.GetComponent<ItemRef>();
 		itemRef.setUiItemProperties(1,0);
@@ -146,7 +146,7 @@ public class UIEquipment : MonoBehaviour {
 					
 					switch (type) { //TODO integrate this into the setSubcript method and then make this a method call
 					case 1:
-						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/batteryInv", typeof(Sprite)) as Sprite;
 						
 						BatteryPower.addPower( (int)otherItemValues.y);
 						batteriesEquipped ++;

@@ -247,6 +247,12 @@ public class Sequencer : MonoBehaviour {
 			case "moveRight":
 				return 4;
 				break;
+			case "scan":
+				return 5;
+				break;
+			case "drill":
+				return 6;
+				break;
 			// Add actions here as necessary
 			// Ie Scan, Drill, etc...
 

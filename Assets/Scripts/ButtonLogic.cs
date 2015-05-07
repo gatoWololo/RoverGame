@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ButtonLogic : MonoBehaviour {
 
-	
+	private bool chooseGameClicked = false;
 
 
 	public void LaunchChosenGame(int gameId){
@@ -35,6 +35,7 @@ public class ButtonLogic : MonoBehaviour {
 	}
 
 	public void ActivateGameButtons(){
+		chooseGameClicked = true;
 		Button chooseGameButton;
 		Button roverGameButton;
 		Button invForGameButton;
@@ -85,7 +86,9 @@ public class ButtonLogic : MonoBehaviour {
 		
 		closeButton.interactable = false;
 		aboutInfoImage.enabled = false;
-		chooseGameImage.enabled = true;
+		if(!chooseGameClicked){
+			chooseGameImage.enabled = true;
+		}
 	}
 
 	public void killGame(){

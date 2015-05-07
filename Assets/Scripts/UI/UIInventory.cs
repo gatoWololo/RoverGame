@@ -71,7 +71,7 @@ public class UIInventory : MonoBehaviour {
 		switch (itemType) { //TODO integrate this into the setSubcript method and then make this a method call
 		case 1:
 			batteriesInInventory++;
-			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
+			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/batteryInv", typeof(Sprite)) as Sprite;
 			break;
 		case 2:
 			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/scrapMetal", typeof(Sprite)) as Sprite;
