@@ -29,10 +29,13 @@ public class UIInventory : MonoBehaviour {
 
 	private Object prefab;
 	
+	public int batteriesInInventory;
+	
 	
 	void Start () {
 		currentInventory = new GameObject[12];
 		currentLength = 0;
+		batteriesInInventory = 0;
 		GameObject roverObject = GameObject.Find("Rover");
 		roverScript = roverObject.GetComponent<RoverScript> ();
 		inventory = roverObject.GetComponent<Inventory>();
@@ -40,6 +43,7 @@ public class UIInventory : MonoBehaviour {
 		prefab = Resources.Load("Prefabs/InventoryItem", typeof(GameObject));
 		vector = new Vector3 (0f, 0f);	
 		staticThis = this;
+		
 	}
 
 	// Update is called once per frame
@@ -51,6 +55,7 @@ public class UIInventory : MonoBehaviour {
 				currentLength++;	
 			}
 		}
+		
 	}
 
 
@@ -65,6 +70,7 @@ public class UIInventory : MonoBehaviour {
 		
 		switch (itemType) { //TODO integrate this into the setSubcript method and then make this a method call
 		case 1:
+			batteriesInInventory++;
 			currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
 			break;
 		case 2:
@@ -212,6 +218,7 @@ public class UIInventory : MonoBehaviour {
 	public Vector2 getSelectedInventory(){
 		if(selectedItem != null){
 			ItemRef itemRef = selectedItem.GetComponent<ItemRef>();
+			if(itemRef.getMyType() == 1){ batteriesInInventory --;}
 			Vector2 itemValues = new Vector2((float)itemRef.getMyType(),(float)itemRef.getMyEnergy());
 			int index = itemRef.getMyIndex();
 			selectedItem = null;
@@ -227,6 +234,14 @@ public class UIInventory : MonoBehaviour {
 		}
 	}
 
+	public int queryInventory(){
+		if(selectedItem!=null){
+			ItemRef itemRef = selectedItem.GetComponent<ItemRef>();
+			return itemRef.getMyType();
+		}
+		else return -1;
+	}
+
 	// this method recieves an itemref represenation of an object from the 
 	// Equipment menu and then instaciates an actual item and adds it to the
 	// rover inventory
@@ -240,6 +255,7 @@ public class UIInventory : MonoBehaviour {
 		switch(itemId){
 			case 1:
 				item = new Battery(vec);
+				batteriesInInventory ++;
 				((Battery)item).setMyEnergy((int)itemValues.y);
 				break;
 			case 2:

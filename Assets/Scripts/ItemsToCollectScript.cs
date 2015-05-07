@@ -14,12 +14,22 @@ public class ItemsToCollectScript : MonoBehaviour {
 	public string powderStr = "Powder: ";
 	public string scrapMetalStr = "Scrap Metal: ";
 	public string headingStr = "Items to Collect";
+	private bool fluxCapacitorDone;
+	private bool copperDone;
+	private bool powderDone;
+	private bool scrapMetalDone;
 
 	// Use this for initialization
 	void Start () {
 		//Skip so the rover doesn't try to get a text box too....
 		if(GetComponentInParent<RoverScript>() == null)
 			displayCounter ();
+		
+		fluxCapacitorDone = false;
+		copperDone = false;
+		powderDone = false;
+		scrapMetalDone = false;
+		
 	}
 	
 	// Update is called once per frame
@@ -48,18 +58,37 @@ public class ItemsToCollectScript : MonoBehaviour {
 				Item currentItem = inventory.getItemAtIndex (i);
 
 				if (currentItem.getIsWinItem ()) {
-					if (currentItem is Copper)
-					if (copperCounter != 0)
-						copperCounter--;
-					if (currentItem is FluxCapacitor)
-					if (fluxCapacitorCounter != 0)
-						fluxCapacitorCounter--;
-					if (currentItem is Powder)
-					if (powderCounter != 0)
-						powderCounter--;
-					if (currentItem is ScrapMetal)
-					if (scrapMetalCounter != 0)
-						scrapMetalCounter--;
+					if (currentItem is Copper){
+						if (copperCounter != 0){
+							copperCounter--;
+						}else{
+							copperDone = true;
+						}
+					}
+					
+					if (currentItem is FluxCapacitor){
+						if (fluxCapacitorCounter != 0){
+							fluxCapacitorCounter--;
+						}else{
+							fluxCapacitorDone = true;
+						}
+					}
+
+					if (currentItem is Powder){
+						if (powderCounter != 0){
+							powderCounter--;
+						}else{
+							powderDone = true;	
+						}
+					}
+
+					if (currentItem is ScrapMetal){
+						if (scrapMetalCounter != 0){
+							scrapMetalCounter--;
+						}else{
+							scrapMetalDone = true;
+						}
+					}
 
 					//Destroy item from Rover's inventory as well as the game object.
 					inventory.removeElement (i);
@@ -72,6 +101,9 @@ public class ItemsToCollectScript : MonoBehaviour {
 				}
 			
 			}
+		}
+		if(copperDone && fluxCapacitorDone && powderDone && scrapMetalDone){
+			Application.LoadLevel("Success Screen");
 		}
 
 		return;

@@ -23,6 +23,8 @@ public class ButtonLogic : MonoBehaviour {
 
 		Image loadingImage = GameObject.Find("Loading").GetComponent<Image>();
 		loadingImage.enabled = true;
+
+		
 		
 		
 		if(gameId == 1){
@@ -57,8 +59,53 @@ public class ButtonLogic : MonoBehaviour {
 		invForGameImage.enabled = true;
 	}
 
+	public void displayAboutInfo(){
+		Button closeButton;
+		Image aboutInfoImage;
+		Image chooseGameImage;
+		
+		closeButton = GameObject.Find("About").GetComponent<Button>();
+		aboutInfoImage = GameObject.Find("About").GetComponent<Image>();
+		chooseGameImage = GameObject.Find("ChooseGameButton").GetComponentInChildren<Image>();
+
+		closeButton.interactable = true;
+		aboutInfoImage.enabled = true;
+		chooseGameImage.enabled = false;
+
+	}
+
+	public void hideAboutInfo(){
+		Button closeButton;
+		Image aboutInfoImage;
+		Image chooseGameImage;
+		
+		closeButton = GameObject.Find("About").GetComponent<Button>();
+		aboutInfoImage = GameObject.Find("About").GetComponent<Image>();
+		chooseGameImage = GameObject.Find("ChooseGameButton").GetComponentInChildren<Image>();
+		
+		closeButton.interactable = false;
+		aboutInfoImage.enabled = false;
+		chooseGameImage.enabled = true;
+	}
+
 	public void killGame(){
 		Application.Quit();
+	}
+
+	public void restartRoverGame(){
+		Button quitButton = GameObject.Find("Quit Button").GetComponent<Button>();
+		Button restartButton = GameObject.Find("ResetButton").GetComponent<Button>();
+		Image quitImage = GameObject.Find("Quit Button").GetComponentInChildren<Image>();
+		Image restartImage = GameObject.Find("ResetButton").GetComponentInChildren<Image>();
+		Image loadingImage = GameObject.Find("Loading").GetComponent<Image>();
+
+		restartImage.enabled = false;
+		quitImage.enabled = false;
+		quitButton.interactable = false;
+		restartButton.interactable = false;
+		loadingImage.enabled = true;
+		
+		Application.LoadLevel("roverGame");
 	}	
 
 }

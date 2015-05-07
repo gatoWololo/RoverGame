@@ -49,6 +49,9 @@ public class UIEquipment : MonoBehaviour {
 		}
 		if(batteriesEquipped == 1 && BatteryPower.currPower<1 ){
 			expelBattery(0);
+			if(inventory.batteriesInInventory == 0){
+				Application.LoadLevel("Game Over Screen");
+			}
 		}
 	}
 
@@ -121,60 +124,65 @@ public class UIEquipment : MonoBehaviour {
 	
 
 	public void addItemToEquipment(int n){
-		Vector2 otherItemValues = inventory.getSelectedInventory(); //type, energy, index
-		type = (int)otherItemValues.x;	
-		if(type > -1){ // make sure an item was selected
-	
-			//Debug.Log ("Added item of type "+ v.x/*type*/ + "from inventory index "+ v.y/*index*/+ " to Equipment" + n);
-			EquipmentType[n] = type;
-			
-			if(n !=3 || n==3 && type == 6){ // drill must be equipped in the Aux Position
-				currentItem = Instantiate(prefab, FirstEquipmentPosition.position, FirstEquipmentPosition.rotation) as GameObject;
-				currentItem.transform.SetParent(FirstEquipmentPosition);
-				vector.x = n*40f; // modify the transform of the new object to match the index in the UI
-				currentItem.transform.position = currentItem.transform.position + vector;
-				itemRef = currentItem.GetComponent<ItemRef>();
-				itemRef.setUiItemProperties(type,n);
-				
-				
-				switch (type) { //TODO integrate this into the setSubcript method and then make this a method call
-				case 1:
-					currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
-					
-					BatteryPower.addPower( (int)otherItemValues.y);
-					batteriesEquipped ++;
-					
-					break;
-				case 2:
-					currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/scrapMetal", typeof(Sprite)) as Sprite;
-					break;
-				case 3:
-					currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/fluxCapacitor", typeof(Sprite)) as Sprite;
-					break;
-				case 4:
-					currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/powder1", typeof(Sprite)) as Sprite;
-					break;
-				case 5:
-					currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/copper1", typeof(Sprite)) as Sprite;
-					break;
-				case 6:
-					hasDrill = true;
-					roverScript.setHasDrill(hasDrill); // tell the rover that it has the drill
-					currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/drill1", typeof(Sprite)) as Sprite;
-					break;
-					
-				}
-				
-				//Debug.Log ("ADDEQUIP my index is: "+ itemRef.getMyIndex() + " My type is: "+ itemRef.getMyType() );
-				currentEquipment[n] = currentItem;
-				if(type == 1){
-					itemRef.setMyEnergy(levelBatteryCharge());
-				}
-				vector.x = 0f;
-			}
-		}	
+		if( n == 3 && inventory.queryInventory() !=6){
+			Debug.Log("Cannot add non drill items to auxiallary");
+		}
 		else{
-			Debug.Log ("Inventory did not exist." );
+			Vector2 otherItemValues = inventory.getSelectedInventory(); //type, energy, index
+			type = (int)otherItemValues.x;	
+			if(type > -1){ // make sure an item was selected
+		
+				//Debug.Log ("Added item of type "+ v.x/*type*/ + "from inventory index "+ v.y/*index*/+ " to Equipment" + n);
+				EquipmentType[n] = type;
+				
+				if(n !=3 || n==3 && type == 6){ // drill must be equipped in the Aux Position
+					currentItem = Instantiate(prefab, FirstEquipmentPosition.position, FirstEquipmentPosition.rotation) as GameObject;
+					currentItem.transform.SetParent(FirstEquipmentPosition);
+					vector.x = n*40f; // modify the transform of the new object to match the index in the UI
+					currentItem.transform.position = currentItem.transform.position + vector;
+					itemRef = currentItem.GetComponent<ItemRef>();
+					itemRef.setUiItemProperties(type,n);
+					
+					
+					switch (type) { //TODO integrate this into the setSubcript method and then make this a method call
+					case 1:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/battery1", typeof(Sprite)) as Sprite;
+						
+						BatteryPower.addPower( (int)otherItemValues.y);
+						batteriesEquipped ++;
+						
+						break;
+					case 2:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/scrapMetal", typeof(Sprite)) as Sprite;
+						break;
+					case 3:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/fluxCapacitor", typeof(Sprite)) as Sprite;
+						break;
+					case 4:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/powder1", typeof(Sprite)) as Sprite;
+						break;
+					case 5:
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/copper1", typeof(Sprite)) as Sprite;
+						break;
+					case 6:
+						hasDrill = true;
+						roverScript.setHasDrill(hasDrill); // tell the rover that it has the drill
+						currentItem.GetComponent<Image>().overrideSprite = Resources.Load("Textures/Items/drill1", typeof(Sprite)) as Sprite;
+						break;
+						
+					}
+					
+					//Debug.Log ("ADDEQUIP my index is: "+ itemRef.getMyIndex() + " My type is: "+ itemRef.getMyType() );
+					currentEquipment[n] = currentItem;
+					if(type == 1){
+						itemRef.setMyEnergy(levelBatteryCharge());
+					}
+					vector.x = 0f;
+				}
+			}	
+			else{
+				Debug.Log ("Inventory did not exist." );
+			}
 		}
 		
 	}
