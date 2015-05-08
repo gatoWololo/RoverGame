@@ -25,6 +25,15 @@ public abstract class Tile {
 	Item item;
 	//Tiles know their position!
 	protected Vector2 position;
+	public TileExploration te;
+	private static System.Random randomPicker;
+	private readonly float[] rotations = {0.0f, 90.0f, 180.0f, 270.0f};
+
+	//Randomly pick rotation for tiles!
+	static Tile(){
+		randomPicker = new System.Random ();
+		return;
+	}
 	//================================================================================
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Tile"/> class.
@@ -37,15 +46,18 @@ public abstract class Tile {
 		gameObject = new GameObject ();
 		renderer = gameObject.AddComponent<SpriteRenderer>();
 		collider = gameObject.AddComponent<BoxCollider2D>();
+		int index = randomPicker.Next(0, rotations.Length);
+		float rot = rotations [index];
 
 		//The tile exploration script will need to know which color that tile was originally.
 		//Add the script to our game object, and set it's color so it can be restored when a
 		//collision happens.
-		TileExploration te = gameObject.AddComponent<TileExploration>();
+		te = gameObject.AddComponent<TileExploration>();
 	
 		//Set position and hitbox.
 		Vector3 finalPos = new Vector3 (position.x, position.y, 0);
 		gameObject.transform.position = finalPos;
+		gameObject.transform.Rotate(new Vector3(0,0,rot));
 		collider.size = new Vector3 (0.1f, 0.1f);
 		//Tiles can be passed through unless specified otherwise in subclass.
 		canPassThroughIt = true;

@@ -14,7 +14,9 @@ public class TileExploration : MonoBehaviour {
 	//If object is seen by the rover it have it's alpha set high again.
 	void OnTriggerEnter2D(Collider2D collider){
 		SpriteRenderer renderer = GetComponent<SpriteRenderer> ();
+		//If it's a lander tile do not do this!
 		Color color = renderer.color;
+
 		renderer.color = new Color (color.r, color.g, color.b, alphaMax);
 
 		return;
@@ -26,7 +28,8 @@ public class TileExploration : MonoBehaviour {
 	//When the collider exits make the tiles medium dark to simulate fog of war.
 	void OnTriggerExit2D(Collider2D collider){
 		SpriteRenderer renderer = GetComponent<SpriteRenderer> ();
-		StartCoroutine(darkenTile(renderer));
+		StartCoroutine (darkenTile (renderer));
+
 		return;
 	}
 	//================================================================================

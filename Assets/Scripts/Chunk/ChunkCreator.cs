@@ -82,6 +82,18 @@ public class ChunkCreator {
 		if (startingChunk == true) {
 			tileArray [11, 18].setItem (new Battery (new Vector2 (xCoord + 11, yCoord + 18)));
 			itemCreator.addItemsToChunk (chunk, true);
+			//Make sure area around  tile is highlighted!
+			for (int i = 4; i < 14; i++){
+				for (int j =6 ; j < 16; j++) {
+					Tile tile = tileArray[i,j];
+					tile.changeAlpha(1.0f);
+					UnityEngine.Object.Destroy(tile.te);
+					if(tile.hasItem()){
+						tile.getItem().destroyGameObject();
+						tile.setItem(new Battery(tile.getPosition()));
+					}
+				}
+			}
 		} else
 			itemCreator.addItemsToChunk (chunk, false);
 

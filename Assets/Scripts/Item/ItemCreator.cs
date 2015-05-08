@@ -12,7 +12,7 @@ public class ItemCreator {
 	private readonly Type[] itemTypes = {typeof(Battery), typeof(ScrapMetal)};
 	//Number of random items per chunk.
 
-	private int itemAmount = 500;
+	private int itemAmount = 50;
 
 	//Get random tiles to place items.
 	System.Random randomInt;
